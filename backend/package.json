@@ -1,0 +1,29 @@
+{
+  "name": "placement-mentor-backend",
+  "version": "1.0.0",
+  "description": "Student placement prediction backend",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "check": "node --check src/server.js"
+  },
+  "keywords": [
+    "placement",
+    "firebase",
+    "express",
+    "ml"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "axios": "^1.13.6",
+    "body-parser": "^2.2.2",
+    "cors": "^2.8.6",
+    "dotenv": "^16.4.5",
+    "express": "^5.2.1",
+    "firebase-admin": "^13.7.0",
+    "multer": "^2.1.1"
+  }
+}

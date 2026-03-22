@@ -1,0 +1,38 @@
+[
+  {
+    "id": "company-1",
+    "name": "CodeCraft Labs",
+    "role": "Software Developer",
+    "packageLpa": 8.5,
+    "minCgpa": 7.0,
+    "maxBacklogs": 0,
+    "requiredSkills": ["javascript", "node.js", "sql", "html", "css"]
+  },
+  {
+    "id": "company-2",
+    "name": "Insight AI",
+    "role": "Data Analyst",
+    "packageLpa": 7.2,
+    "minCgpa": 7.5,
+    "maxBacklogs": 0,
+    "requiredSkills": ["python", "pandas", "sql", "machine learning", "excel"]
+  },
+  {
+    "id": "company-3",
+    "name": "CloudSphere",
+    "role": "Cloud Support Engineer",
+    "packageLpa": 6.4,
+    "minCgpa": 6.5,
+    "maxBacklogs": 1,
+    "requiredSkills": ["linux", "networking", "aws", "python", "communication"]
+  },
+  {
+    "id": "company-4",
+    "name": "PixelForge",
+    "role": "Frontend Developer",
+    "packageLpa": 7.8,
+    "minCgpa": 6.8,
+    "maxBacklogs": 0,
+    "requiredSkills": ["javascript", "react", "tailwind css", "html", "css"]
+  }
+]
