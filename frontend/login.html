@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Placement Mentor | Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="min-h-screen bg-slate-950 text-slate-100">
+    <main class="mx-auto grid min-h-screen max-w-7xl items-center gap-8 px-6 py-12 lg:grid-cols-[1fr_0.95fr] lg:px-10">
+      <section class="space-y-6">
+        <a href="/" class="inline-flex items-center rounded-full border border-white/10 px-4 py-2 text-sm text-slate-300">
+          Back to Home
+        </a>
+        <h1 class="text-4xl font-black leading-tight text-white sm:text-5xl">
+          Sign in or create your campus placement workspace.
+        </h1>
+        <p class="max-w-xl text-lg text-slate-300">
+          Use your Firebase project credentials in the config file, then register as a student, faculty member, or TNP officer.
+        </p>
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div class="rounded-3xl border border-white/10 bg-white/5 p-5">
+            <p class="font-semibold text-white">Student</p>
+            <p class="mt-2 text-sm text-slate-300">Upload resume, save scores, and predict placement.</p>
+          </div>
+          <div class="rounded-3xl border border-white/10 bg-white/5 p-5">
+            <p class="font-semibold text-white">Faculty</p>
+            <p class="mt-2 text-sm text-slate-300">Track profiles and update student records.</p>
+          </div>
+          <div class="rounded-3xl border border-white/10 bg-white/5 p-5">
+            <p class="font-semibold text-white">TNP Officer</p>
+            <p class="mt-2 text-sm text-slate-300">Monitor analytics and shortlist company matches.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="rounded-[2rem] border border-white/10 bg-white/10 p-6 backdrop-blur">
+        <div id="statusMessage" class="mb-4 hidden rounded-2xl px-4 py-3 text-sm"></div>
+
+        <div class="mb-5 flex gap-3 rounded-2xl bg-slate-900 p-2">
+          <button id="loginTab" class="flex-1 rounded-xl bg-orange-500 px-4 py-3 font-semibold text-white">
+            Login
+          </button>
+          <button id="registerTab" class="flex-1 rounded-xl px-4 py-3 font-semibold text-slate-300">
+            Register
+          </button>
+        </div>
+
+        <form id="loginForm" class="space-y-4 rounded-[1.5rem] bg-slate-900 p-6">
+          <div>
+            <label class="mb-2 block text-sm text-slate-300">Email</label>
+            <input id="loginEmail" type="email" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 outline-none focus:border-orange-500" placeholder="example@ternaengg.ac.in" required />
+          </div>
+          <div>
+            <label class="mb-2 block text-sm text-slate-300">Password</label>
+            <input id="loginPassword" type="password" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 outline-none focus:border-orange-500" placeholder="********" required />
+          </div>
+          <button class="w-full rounded-2xl bg-orange-500 px-4 py-3 font-semibold text-white transition hover:bg-orange-400">
+            Login
+          </button>
+          <button id="forgotPasswordButton" type="button" class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 font-semibold text-slate-200 transition hover:bg-white/10">
+            Forgot Password
+          </button>
+        </form>
+
+        <form id="registerForm" class="hidden space-y-4 rounded-[1.5rem] bg-slate-900 p-6">
+          <div>
+            <label class="mb-2 block text-sm text-slate-300">Full Name</label>
+            <input id="registerName" type="text" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 outline-none focus:border-orange-500" placeholder="your name" required />
+          </div>
+          <div>
+            <label class="mb-2 block text-sm text-slate-300">Email</label>
+            <input id="registerEmail" type="email" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 outline-none focus:border-orange-500" placeholder="example@college.edu" required />
+          </div>
+          <div>
+            <label class="mb-2 block text-sm text-slate-300">Password</label>
+            <input id="registerPassword" type="password" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 outline-none focus:border-orange-500" placeholder="Minimum 6 characters" required />
+          </div>
+          <div>
+            <label class="mb-2 block text-sm text-slate-300">Role</label>
+            <select id="registerRole" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 outline-none focus:border-orange-500">
+              <option value="student">Student</option>
+              <option value="faculty">Faculty</option>
+              <option value="tnp">TNP Officer</option>
+            </select>
+          </div>
+          <div>
+            <label class="mb-2 block text-sm text-slate-300">Department</label>
+            <input id="registerDepartment" type="text" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 outline-none focus:border-orange-500" placeholder="your department" />
+          </div>
+          <button class="w-full rounded-2xl bg-teal-500 px-4 py-3 font-semibold text-slate-950 transition hover:bg-teal-400">
+            Create Account
+          </button>
+          <button id="verifyEmailInfoButton" type="button" class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 font-semibold text-slate-200 transition hover:bg-white/10">
+            Email Verification Info
+          </button>
+        </form>
+      </section>
+    </main>
+
+    <script type="module" src="/js/auth.js"></script>
+  </body>
+</html>

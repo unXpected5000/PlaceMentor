@@ -1,0 +1,25 @@
+cgpa,aptitude_score,soft_skills_score,resume_score,skills,projects,certifications,placement_status,predicted_role,expected_salary_lpa
+9.1,88,84,86,"python|machine learning|sql|pandas|power bi","lung disease detector|sales dashboard","aws cloud practitioner|nptel python",1,Data Analyst,9.8
+8.7,81,79,82,"javascript|node.js|html|css|sql","campus placement portal|inventory manager","meta frontend",1,Software Developer,8.4
+7.4,72,68,71,"python|sql|excel|communication","attendance tracker","google data analytics",1,Data Analyst,6.8
+6.8,61,63,59,"c|java|oops","student result system","",0,Support Engineer,4.2
+8.9,86,77,80,"aws|linux|python|networking","server monitoring toolkit","aws cloud practitioner",1,Cloud Support Engineer,8.1
+7.9,75,72,74,"javascript|react|html|css|tailwind css","portfolio builder|travel website","meta frontend",1,Frontend Developer,7.6
+6.5,55,58,52,"c|dbms","library management","",0,Support Engineer,3.9
+8.2,78,81,79,"python|flask|sql|communication","expense tracker api|chatbot","ibm ai engineering",1,Software Developer,7.4
+9.3,91,88,92,"python|machine learning|deep learning|nlp|sql","resume analyzer|fraud detector","aws cloud practitioner|coursera ml",1,ML Engineer,11.2
+7.1,66,69,64,"java|sql|communication","college forum","oracle java",0,Support Engineer,4.8
+8.0,73,75,77,"excel|power bi|sql|python","retail dashboard","google data analytics",1,Data Analyst,7.1
+8.4,82,78,81,"react|javascript|html|css|node.js","food delivery ui|blog api","meta frontend",1,Frontend Developer,8.2
+7.6,70,74,68,"linux|networking|aws|python","system health monitor","aws cloud practitioner",1,Cloud Support Engineer,6.9
+6.9,60,62,57,"java|dbms|oops","quiz app","",0,Support Engineer,4.1
+8.8,84,83,85,"python|sql|tableau|pandas","student insights dashboard","google data analytics",1,Data Analyst,8.8
+8.1,77,71,76,"node.js|express|mongodb|javascript","campus connect api|task manager","node certification",1,Software Developer,7.9
+7.3,69,72,66,"html|css|javascript","landing page suite","",0,Frontend Developer,5.2
+9.0,89,86,90,"python|nlp|machine learning|flask|sql","resume parser|smart recruiter","coursera ml|aws cloud practitioner",1,ML Engineer,10.6
+7.8,74,80,73,"communication|excel|sql|python","placement report generator","google data analytics",1,Data Analyst,6.7
+8.6,83,82,84,"react|tailwind css|javascript|figma","internship portal|event page","meta frontend",1,Frontend Developer,8.0
+7.0,63,67,60,"linux|communication|python","ticket tracker","",0,Support Engineer,4.5
+8.5,80,76,82,"aws|python|linux|sql","cloud cost analyzer","aws cloud practitioner",1,Cloud Support Engineer,8.3
+7.7,71,73,70,"java|spring|sql","employee portal","oracle java",1,Software Developer,6.8
+6.7,58,61,55,"c|communication","hostel complaint app","",0,Support Engineer,3.8

@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Placement Mentor | Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body id="dashboardBody" class="min-h-screen bg-slate-950 text-slate-100">
+    <div id="dashboardBackdrop" class="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(14,165,233,0.18),_transparent_28%),radial-gradient(circle_at_top_right,_rgba(249,115,22,0.14),_transparent_30%),linear-gradient(180deg,_#020617_0%,_#0f172a_58%,_#020617_100%)]"></div>
+    <div class="mx-auto max-w-[1500px] px-4 py-4 lg:px-6">
+      <div class="grid min-h-[calc(100vh-2rem)] gap-4 xl:grid-cols-[270px_1fr]">
+        <aside id="sidebar" class="rounded-[2rem] border border-white/10 bg-slate-900/80 p-5 shadow-2xl shadow-black/30 backdrop-blur">
+          <div class="rounded-[1.75rem] border border-white/10 bg-white/5 p-5">
+            <p class="text-xs uppercase tracking-[0.35em] text-cyan-300">Placement Mentor</p>
+            <h1 class="mt-3 text-3xl font-black text-white">Career OS</h1>
+            <p class="mt-2 text-sm leading-6 text-slate-300">
+              Analytics-led placement workflow for students, faculty, and TNP officers.
+            </p>
+          </div>
+
+          <nav class="mt-6 space-y-3">
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Workspace</p>
+              <div class="mt-4 space-y-3 text-sm">
+                <div class="rounded-2xl bg-cyan-400/10 px-4 py-3 text-cyan-200">Overview</div>
+                <div class="rounded-2xl bg-white/5 px-4 py-3 text-slate-300">Predictions</div>
+                <div class="rounded-2xl bg-white/5 px-4 py-3 text-slate-300">Company Matching</div>
+                <div class="rounded-2xl bg-white/5 px-4 py-3 text-slate-300">Profile Intelligence</div>
+              </div>
+            </div>
+
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Quick Notes</p>
+              <ul class="mt-4 space-y-3 text-sm text-slate-300">
+                <li class="rounded-xl border border-white/5 bg-slate-950/50 px-3 py-3">Use Student role to test predictions and profile save.</li>
+                <li class="rounded-xl border border-white/5 bg-slate-950/50 px-3 py-3">Faculty can update student records from the monitoring table.</li>
+                <li class="rounded-xl border border-white/5 bg-slate-950/50 px-3 py-3">TNP gets portfolio-level analytics and match board views.</li>
+              </ul>
+            </div>
+          </nav>
+        </aside>
+
+        <main id="mainPanel" class="rounded-[2rem] border border-white/10 bg-slate-900/55 p-4 shadow-2xl shadow-black/25 backdrop-blur lg:p-6">
+          <header id="topBar" class="sticky top-4 z-10 mb-4 rounded-[1.8rem] border border-white/10 bg-slate-900/92 px-5 py-4 shadow-lg shadow-black/20 backdrop-blur">
+            <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div class="flex items-center gap-4">
+                <label for="avatarInput" id="avatarButton" class="group relative flex h-14 w-14 cursor-pointer items-center justify-center overflow-hidden rounded-2xl bg-cyan-400/10 text-lg font-black text-cyan-200">
+                  <img id="avatarImage" alt="Profile" class="hidden h-full w-full object-cover" />
+                  <span id="avatarInitials">--</span>
+                  <span class="pointer-events-none absolute inset-x-0 bottom-0 translate-y-full bg-black/55 px-2 py-1 text-[10px] font-medium text-white opacity-0 transition duration-200 group-hover:translate-y-0 group-hover:opacity-100">Edit</span>
+                </label>
+                <input id="avatarInput" type="file" accept="image/*" class="hidden" />
+                <div>
+                  <p id="topBarName" class="text-lg font-bold text-white">Loading user...</p>
+                  <p id="topBarEmail" class="mt-1 text-sm text-slate-400">Loading email...</p>
+                </div>
+                <span id="roleBadge" class="inline-flex rounded-full bg-orange-500/15 px-4 py-2 text-sm font-semibold text-orange-300">
+                  Loading
+                </span>
+              </div>
+              <div class="flex flex-wrap items-center gap-3">
+                <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300">
+                  Version <span class="font-semibold text-white">Test 1.0</span>
+                </div>
+                <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300">
+                  College placement project, built to evolve with future iterations.
+                </div>
+                <button id="settingsButton" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10">
+                  Settings
+                </button>
+                <button id="logoutButton" class="rounded-2xl bg-red-500/90 px-4 py-3 text-sm font-semibold text-white transition hover:bg-red-400">
+                  Logout
+                </button>
+              </div>
+            </div>
+          </header>
+
+          <header class="rounded-[1.8rem] border border-white/10 bg-gradient-to-r from-slate-900 to-slate-800/70 p-6">
+            <div class="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
+              <div>
+                <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Live Workspace</p>
+                <h2 class="mt-3 text-3xl font-black text-white lg:text-4xl">Prediction, readiness, and matching in one flow.</h2>
+                <p class="mt-3 max-w-3xl text-sm leading-7 text-slate-300">
+                  A more product-style dashboard inspired by modern analytics SaaS patterns: stronger hierarchy, visual status blocks, quick-glance cards, and richer decision support.
+                </p>
+              </div>
+              <div class="grid gap-3 sm:grid-cols-3 xl:min-w-[460px]">
+                <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Placement Readiness</p>
+                  <p id="heroPlacementProbability" class="mt-3 text-3xl font-black text-white">--</p>
+                </div>
+                <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Best Match</p>
+                  <p id="heroBestMatch" class="mt-3 text-xl font-bold text-white">--</p>
+                </div>
+                <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p class="text-xs uppercase tracking-[0.2em] text-slate-500">ATS / Resume</p>
+                  <p id="heroResumeScore" class="mt-3 text-3xl font-black text-white">--</p>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <div id="globalMessage" class="mt-4 hidden rounded-2xl px-4 py-3 text-sm"></div>
+
+          <section id="studentSection" class="hidden space-y-6 pt-6">
+            <div class="grid gap-4 lg:grid-cols-4">
+              <article class="rounded-[1.6rem] border border-cyan-400/15 bg-gradient-to-br from-cyan-500/10 to-cyan-500/0 p-5">
+                <p class="text-xs uppercase tracking-[0.25em] text-cyan-200/80">Placement Probability</p>
+                <p id="studentMetricProbability" class="mt-3 text-4xl font-black text-white">--</p>
+                <p class="mt-2 text-sm text-slate-300">Live signal from the prediction engine.</p>
+              </article>
+              <article class="rounded-[1.6rem] border border-emerald-400/15 bg-gradient-to-br from-emerald-500/10 to-emerald-500/0 p-5">
+                <p class="text-xs uppercase tracking-[0.25em] text-emerald-200/80">Resume Strength</p>
+                <p id="studentMetricResume" class="mt-3 text-4xl font-black text-white">--</p>
+                <p class="mt-2 text-sm text-slate-300">ATS score and profile completeness.</p>
+              </article>
+              <article class="rounded-[1.6rem] border border-orange-400/15 bg-gradient-to-br from-orange-500/10 to-orange-500/0 p-5">
+                <p class="text-xs uppercase tracking-[0.25em] text-orange-200/80">Expected Salary</p>
+                <p id="studentMetricSalary" class="mt-3 text-4xl font-black text-white">--</p>
+                <p class="mt-2 text-sm text-slate-300">Model-estimated CTC expectation.</p>
+              </article>
+              <article class="rounded-[1.6rem] border border-fuchsia-400/15 bg-gradient-to-br from-fuchsia-500/10 to-fuchsia-500/0 p-5">
+                <p class="text-xs uppercase tracking-[0.25em] text-fuchsia-200/80">Top Target Role</p>
+                <p id="studentMetricRole" class="mt-3 text-2xl font-black text-white">--</p>
+                <p class="mt-2 text-sm text-slate-300">Most likely placement track right now.</p>
+              </article>
+            </div>
+
+            <div class="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
+              <div class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+                <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                  <div>
+                    <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Student Health</p>
+                    <h3 class="mt-2 text-2xl font-bold text-white">Readiness Radar</h3>
+                    <p class="mt-2 text-sm text-slate-300">Quick bars for academics, aptitude, soft skills, resume quality, and market fit.</p>
+                  </div>
+                  <div class="rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm text-slate-300">
+                    Update profile data and click predict to refresh.
+                  </div>
+                </div>
+                <div id="studentReadinessChart" class="mt-6 grid gap-4 md:grid-cols-2"></div>
+              </div>
+
+              <div class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+                <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Career Momentum</p>
+                <h3 class="mt-2 text-2xl font-bold text-white">Action Timeline</h3>
+                <div id="studentTimeline" class="mt-6 space-y-4"></div>
+              </div>
+            </div>
+
+            <div class="grid gap-4 xl:grid-cols-[1.05fr_0.95fr]">
+              <form id="studentProfileForm" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+                <div class="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                  <div>
+                    <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Profile Builder</p>
+                    <h3 class="mt-2 text-2xl font-bold text-white">Student Profile</h3>
+                    <p class="mt-2 text-sm text-slate-300">Persist your academic, portfolio, and skill signals to drive matching quality.</p>
+                  </div>
+                  <button class="rounded-2xl bg-teal-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-teal-400">
+                    Save Profile
+                  </button>
+                </div>
+                <div class="grid gap-4 md:grid-cols-2">
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">CGPA</span>
+                    <input name="cgpa" type="number" step="0.01" min="0" max="10" placeholder="Enter CGPA" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
+                  </label>
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Graduation Year</span>
+                    <input name="graduationYear" type="number" placeholder="Enter graduation year" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
+                  </label>
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Aptitude Score</span>
+                    <input name="aptitudeScore" type="number" min="0" max="100" placeholder="Enter aptitude score" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
+                  </label>
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Soft Skills Score</span>
+                    <input name="softSkillsScore" type="number" min="0" max="100" placeholder="Enter soft skills score" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
+                  </label>
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Resume Score</span>
+                    <input name="resumeScore" type="number" min="0" max="100" placeholder="Enter resume score" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
+                  </label>
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Preferred Role</span>
+                    <input name="preferredRole" type="text" placeholder="Enter preferred role" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
+                  </label>
+                  <label class="block text-sm text-slate-300 md:col-span-2">
+                    <span class="mb-2 block">Department</span>
+                    <input name="department" type="text" placeholder="Enter department" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
+                  </label>
+                  <label class="block text-sm text-slate-300 md:col-span-2">
+                    <span class="mb-2 block">Skills</span>
+                    <textarea name="skills" placeholder="Comma separated skills" class="min-h-28 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3"></textarea>
+                  </label>
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Projects</span>
+                    <textarea name="projects" placeholder="Comma separated projects" class="min-h-28 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3"></textarea>
+                  </label>
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Certifications</span>
+                    <textarea name="certifications" placeholder="Comma separated certifications" class="min-h-28 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3"></textarea>
+                  </label>
+                </div>
+              </form>
+
+              <div class="space-y-4">
+                <div class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+                  <div class="mb-5 flex items-center justify-between">
+                    <div>
+                      <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Prediction Engine</p>
+                      <h3 class="mt-2 text-2xl font-bold text-white">Career Forecast</h3>
+                    </div>
+                    <button id="predictButton" type="button" class="rounded-2xl bg-indigo-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-400">
+                      Predict
+                    </button>
+                  </div>
+                  <div id="predictionResult" class="rounded-2xl border border-slate-800 bg-slate-950/70 p-5 text-sm text-slate-300">
+                    Prediction results will appear here.
+                  </div>
+                </div>
+
+                <form id="resumeUploadForm" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+                  <div class="mb-4">
+                    <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Resume Analyzer</p>
+                    <h3 class="mt-2 text-2xl font-bold text-white">ATS Review</h3>
+                    <p class="mt-2 text-sm text-slate-300">Upload PDF or DOCX when Firebase Storage is enabled on your project.</p>
+                  </div>
+                  <input id="resumeFile" type="file" accept=".pdf,.docx" class="block w-full rounded-2xl border border-dashed border-slate-600 bg-slate-950 px-4 py-8 text-sm text-slate-300" />
+                  <button class="mt-4 w-full rounded-2xl bg-orange-500 px-4 py-3 font-semibold text-white transition hover:bg-orange-400">
+                    Analyze Resume
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <div class="grid gap-4 xl:grid-cols-2">
+              <div class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+                <div class="mb-4">
+                  <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Resume Feedback</p>
+                  <h3 class="mt-2 text-2xl font-bold text-white">Document Intelligence</h3>
+                </div>
+                <div id="resumeAnalysisResult" class="rounded-2xl border border-slate-800 bg-slate-950/70 p-5 text-sm text-slate-300">
+                  Resume feedback will appear here.
+                </div>
+              </div>
+              <div class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+                <div class="mb-4 flex items-end justify-between">
+                  <div>
+                    <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Company Matching</p>
+                    <h3 class="mt-2 text-2xl font-bold text-white">Shortlist Board</h3>
+                  </div>
+                  <div class="rounded-full bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.25em] text-slate-400">Eligibility</div>
+                </div>
+                <div id="studentCompanyMatches" class="overflow-x-auto text-sm text-slate-300">
+                  Company matching results will appear here.
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="facultySection" class="hidden space-y-6 pt-6">
+            <div class="grid gap-4 md:grid-cols-3">
+              <article class="rounded-[1.6rem] border border-white/10 bg-white/5 p-5">
+                <p class="text-xs uppercase tracking-[0.25em] text-slate-500">Students Monitored</p>
+                <p id="facultyMetricStudents" class="mt-3 text-4xl font-black text-white">0</p>
+              </article>
+              <article class="rounded-[1.6rem] border border-white/10 bg-white/5 p-5">
+                <p class="text-xs uppercase tracking-[0.25em] text-slate-500">Avg Probability</p>
+                <p id="facultyMetricAverage" class="mt-3 text-4xl font-black text-white">0%</p>
+              </article>
+              <article class="rounded-[1.6rem] border border-white/10 bg-white/5 p-5">
+                <p class="text-xs uppercase tracking-[0.25em] text-slate-500">Need Attention</p>
+                <p id="facultyMetricAttention" class="mt-3 text-4xl font-black text-white">0</p>
+              </article>
+            </div>
+
+            <div class="grid gap-4 lg:grid-cols-4">
+              <input id="facultySearchInput" type="text" placeholder="Search by name or email" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white" />
+              <select id="facultyStatusFilter" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white">
+                <option value="all">All application statuses</option>
+                <option value="Not Applied">Not Applied</option>
+                <option value="Applied">Applied</option>
+                <option value="Interviewing">Interviewing</option>
+                <option value="Offer Received">Offer Received</option>
+              </select>
+              <select id="facultySortSelect" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white">
+                <option value="probability-desc">Sort by probability</option>
+                <option value="cgpa-desc">Sort by CGPA</option>
+                <option value="name-asc">Sort by name</option>
+              </select>
+              <button id="facultyExportButton" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
+                Export CSV
+              </button>
+            </div>
+
+            <div class="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
+              <div class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+                <div class="mb-5 flex items-center justify-between">
+                  <div>
+                    <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Monitoring Table</p>
+                    <h3 class="mt-2 text-2xl font-bold text-white">Student Overview</h3>
+                  </div>
+                  <button id="refreshFacultyData" class="rounded-2xl border border-white/15 px-4 py-3 text-sm font-semibold text-slate-200 transition hover:bg-white/10">
+                    Refresh
+                  </button>
+                </div>
+                <div id="facultyStudentTable" class="overflow-x-auto text-sm text-slate-300"></div>
+              </div>
+
+              <form id="facultyEditForm" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+                <div class="mb-5">
+                  <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Student Editor</p>
+                  <h3 class="mt-2 text-2xl font-bold text-white">Update Profile</h3>
+                  <p id="facultySelectedStudent" class="mt-2 text-sm text-slate-300">Select a student from the table above.</p>
+                </div>
+                <input type="hidden" name="studentId" />
+                <div class="grid gap-4 md:grid-cols-2">
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">CGPA</span>
+                    <input name="cgpa" type="number" step="0.01" placeholder="Enter CGPA" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
+                  </label>
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Aptitude Score</span>
+                    <input name="aptitudeScore" type="number" placeholder="Enter aptitude score" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
+                  </label>
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Soft Skills Score</span>
+                    <input name="softSkillsScore" type="number" placeholder="Enter soft skills score" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
+                  </label>
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Resume Score</span>
+                    <input name="resumeScore" type="number" placeholder="Enter resume score" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
+                  </label>
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Application Status</span>
+                    <select name="applicationStatus" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3">
+                      <option>Not Applied</option>
+                      <option>Applied</option>
+                      <option>Interviewing</option>
+                      <option>Offer Received</option>
+                    </select>
+                  </label>
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Interview Status</span>
+                    <select name="interviewStatus" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3">
+                      <option>Not Scheduled</option>
+                      <option>Scheduled</option>
+                      <option>Completed</option>
+                    </select>
+                  </label>
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Pipeline Stage</span>
+                    <select name="pipelineStage" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3">
+                      <option>Shortlist</option>
+                      <option>Selected</option>
+                      <option>Rejected</option>
+                    </select>
+                  </label>
+                  <label class="block text-sm text-slate-300 md:col-span-2">
+                    <span class="mb-2 block">Skills</span>
+                    <textarea name="skills" placeholder="Comma separated skills" class="min-h-28 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3"></textarea>
+                  </label>
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Projects</span>
+                    <textarea name="projects" placeholder="Comma separated projects" class="min-h-28 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3"></textarea>
+                  </label>
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Certifications</span>
+                    <textarea name="certifications" placeholder="Comma separated certifications" class="min-h-28 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3"></textarea>
+                  </label>
+                  <label class="block text-sm text-slate-300 md:col-span-2">
+                    <span class="mb-2 block">Faculty Notes</span>
+                    <textarea name="facultyNotes" placeholder="Observations, blockers, action items" class="min-h-28 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3"></textarea>
+                  </label>
+                </div>
+                <button class="mt-4 w-full rounded-2xl bg-teal-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-teal-400">
+                  Update Student
+                </button>
+              </form>
+            </div>
+          </section>
+
+          <section id="tnpSection" class="hidden space-y-6 pt-6">
+            <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+              <article class="rounded-[1.6rem] border border-white/10 bg-white/5 p-5">
+                <p class="text-xs uppercase tracking-[0.25em] text-slate-500">Total Students</p>
+                <p id="metricTotalStudents" class="mt-3 text-4xl font-black text-white">0</p>
+              </article>
+              <article class="rounded-[1.6rem] border border-white/10 bg-white/5 p-5">
+                <p class="text-xs uppercase tracking-[0.25em] text-slate-500">Placement Ready</p>
+                <p id="metricReadyStudents" class="mt-3 text-4xl font-black text-white">0</p>
+              </article>
+              <article class="rounded-[1.6rem] border border-white/10 bg-white/5 p-5">
+                <p class="text-xs uppercase tracking-[0.25em] text-slate-500">Avg Probability</p>
+                <p id="metricAveragePlacement" class="mt-3 text-4xl font-black text-white">0%</p>
+              </article>
+              <article class="rounded-[1.6rem] border border-white/10 bg-white/5 p-5">
+                <p class="text-xs uppercase tracking-[0.25em] text-slate-500">Companies</p>
+                <p id="metricTotalCompanies" class="mt-3 text-4xl font-black text-white">0</p>
+              </article>
+            </div>
+
+            <div class="grid gap-4 xl:grid-cols-[0.9fr_1.1fr]">
+              <div class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+                <div class="mb-4">
+                  <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Role Distribution</p>
+                  <h3 class="mt-2 text-2xl font-bold text-white">Portfolio Mix</h3>
+                </div>
+                <div id="roleDistribution" class="space-y-3 text-sm text-slate-300"></div>
+              </div>
+              <div class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+                <div class="mb-4">
+                  <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Placement Funnel</p>
+                  <h3 class="mt-2 text-2xl font-bold text-white">Readiness Stages</h3>
+                </div>
+                <div id="tnpFunnel" class="space-y-4"></div>
+              </div>
+            </div>
+
+            <div class="grid gap-4 xl:grid-cols-[1fr_1fr]">
+              <div class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+                <div class="mb-4 flex items-center justify-between">
+                  <div>
+                    <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Company Management</p>
+                    <h3 class="mt-2 text-2xl font-bold text-white">Add or Update Company</h3>
+                  </div>
+                  <button id="tnpExportStudentsButton" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
+                    Export Students
+                  </button>
+                </div>
+                <form id="companyForm" class="grid gap-4 md:grid-cols-2">
+                  <input type="hidden" name="companyId" />
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Company Name</span>
+                    <input name="name" type="text" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
+                  </label>
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Role</span>
+                    <input name="role" type="text" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
+                  </label>
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Package (LPA)</span>
+                    <input name="packageLpa" type="number" step="0.1" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
+                  </label>
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Min CGPA</span>
+                    <input name="minCgpa" type="number" step="0.1" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
+                  </label>
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Max Backlogs</span>
+                    <input name="maxBacklogs" type="number" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
+                  </label>
+                  <label class="block text-sm text-slate-300 md:col-span-2">
+                    <span class="mb-2 block">Required Skills</span>
+                    <textarea name="requiredSkills" class="min-h-24 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3"></textarea>
+                  </label>
+                  <label class="block text-sm text-slate-300 md:col-span-2">
+                    <span class="mb-2 block">Eligibility Rules</span>
+                    <textarea name="eligibilityRules" class="min-h-24 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3"></textarea>
+                  </label>
+                  <button class="rounded-2xl bg-cyan-500 px-4 py-3 font-semibold text-slate-950">Save Company</button>
+                </form>
+              </div>
+
+              <div class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+                <div class="mb-4">
+                  <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Grouping Views</p>
+                  <h3 class="mt-2 text-2xl font-bold text-white">Students By Role / Stage</h3>
+                </div>
+                <div id="tnpGroupingBoard" class="space-y-3"></div>
+              </div>
+            </div>
+
+            <div class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+              <div class="mb-4">
+                <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Company Match Board</p>
+                <h3 class="mt-2 text-2xl font-bold text-white">Shortlist Intelligence</h3>
+              </div>
+              <div id="companyMatchBoard" class="overflow-x-auto text-sm text-slate-300"></div>
+            </div>
+
+            <div class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+              <div class="mb-4">
+                <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Live Company List</p>
+                <h3 class="mt-2 text-2xl font-bold text-white">Company Eligibility Rules</h3>
+              </div>
+              <div id="tnpCompanyList" class="space-y-3 text-sm text-slate-300"></div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <div id="settingsPanel" class="pointer-events-none fixed inset-y-4 right-4 z-20 w-full max-w-md translate-x-[110%] rounded-[2rem] border border-white/10 bg-slate-900/95 p-6 opacity-0 shadow-2xl shadow-black/40 transition duration-300">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Workspace Settings</p>
+          <h3 class="mt-2 text-2xl font-bold text-white">Personalize Dashboard</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-300">Small quality-of-life controls for this project version. More settings can be added in future releases.</p>
+        </div>
+        <button id="closeSettingsButton" class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-300">Close</button>
+      </div>
+
+      <div class="mt-6 space-y-5">
+        <section class="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <p class="text-sm font-semibold text-white">Profile</p>
+          <div class="mt-4 space-y-4">
+            <label class="block text-sm text-slate-300">
+              <span class="mb-2 block">Display Name</span>
+              <input id="settingsNameInput" type="text" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white" placeholder="Enter your display name" />
+            </label>
+            <label class="block text-sm text-slate-300">
+              <span class="mb-2 block">Department</span>
+              <input id="settingsDepartmentInput" type="text" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white" placeholder="Enter department" />
+            </label>
+            <button id="saveProfileSettingsButton" class="w-full rounded-2xl bg-cyan-500 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-400">
+              Save Profile Changes
+            </button>
+          </div>
+        </section>
+
+        <section class="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <p class="text-sm font-semibold text-white">Password</p>
+          <div class="mt-4 space-y-4">
+            <label class="block text-sm text-slate-300">
+              <span class="mb-2 block">New Password</span>
+              <input id="settingsPasswordInput" type="password" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white" placeholder="Minimum 6 characters" />
+            </label>
+            <button id="changePasswordButton" class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
+              Change Password
+            </button>
+          </div>
+        </section>
+
+        <section class="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <p class="text-sm font-semibold text-white">Theme Mode</p>
+          <div class="mt-4 grid grid-cols-3 gap-3">
+            <button data-theme="dark" class="theme-option rounded-2xl border border-white/10 bg-slate-950 px-3 py-4 text-sm font-semibold text-slate-200">Dark</button>
+            <button data-theme="light" class="theme-option rounded-2xl border border-white/10 bg-slate-100 px-3 py-4 text-sm font-semibold text-slate-900">Light</button>
+            <button data-theme="gray" class="theme-option rounded-2xl border border-white/10 bg-slate-500/20 px-3 py-4 text-sm font-semibold text-slate-200">Gray</button>
+          </div>
+        </section>
+
+        <section class="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <div class="flex items-center justify-between gap-4">
+            <div>
+              <p class="text-sm font-semibold text-white">Compact Sidebar Notes</p>
+              <p class="mt-1 text-sm text-slate-400">Hide the sidebar helper blocks for a cleaner workspace.</p>
+            </div>
+            <label class="inline-flex cursor-pointer items-center">
+              <input id="compactModeToggle" type="checkbox" class="peer sr-only" />
+              <span class="h-7 w-12 rounded-full bg-slate-700 transition after:ml-1 after:block after:h-5 after:w-5 after:translate-y-1 after:rounded-full after:bg-white after:transition peer-checked:bg-cyan-500 peer-checked:after:translate-x-5"></span>
+            </label>
+          </div>
+        </section>
+
+        <section class="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <p class="text-sm font-semibold text-white">Project Info</p>
+          <ul class="mt-3 space-y-2 text-sm leading-6 text-slate-300">
+            <li>Version: MVP 1.0</li>
+            <li>Status: Active student placement project</li>
+            <li>Roadmap: Resume upload improvements, richer charts, more settings, and design refinements can be added later.</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+
+    <script type="module" src="/js/dashboard.js"></script>
+  </body>
+</html>

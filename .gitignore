@@ -1,0 +1,15 @@
+backend/node_modules/
+backend/.env
+backend/uploads/*
+!backend/uploads/.gitkeep
+ml/.venv/
+ml/model.pkl
+ml/artifacts/*.joblib
+ml/src/__pycache__/
+*.pyc
+frontend/js/config.local.js
+frontend/js/config.js
+configValues.txt
+.DS_Store
+Thumbs.db
+*.log

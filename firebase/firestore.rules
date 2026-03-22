@@ -1,0 +1,50 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function userRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isOwner(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function isFaculty() {
+      return signedIn() && (userRole() == "faculty" || userRole() == "tnp");
+    }
+
+    function isTnp() {
+      return signedIn() && userRole() == "tnp";
+    }
+
+    match /users/{userId} {
+      allow read: if signedIn();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) || isFaculty();
+    }
+
+    match /studentProfiles/{userId} {
+      allow read: if isOwner(userId) || isFaculty();
+      allow create, update: if isOwner(userId) || isFaculty();
+    }
+
+    match /predictions/{userId} {
+      allow read: if isOwner(userId) || isFaculty();
+      allow write: if isOwner(userId) || isFaculty();
+    }
+
+    match /resumeAnalyses/{userId} {
+      allow read: if isOwner(userId) || isFaculty();
+      allow write: if isOwner(userId) || isFaculty();
+    }
+
+    match /companies/{companyId} {
+      allow read: if signedIn();
+      allow write: if isTnp();
+    }
+  }
+}
