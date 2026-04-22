@@ -31,6 +31,16 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+app.get("/app-config.js", (req, res) => {
+  res.type("application/javascript");
+  res.send(
+    `window.__APP_CONFIG__ = ${JSON.stringify({
+      apiBaseUrl: "/api",
+      firebaseConfig: env.firebaseWeb,
+    })};`
+  );
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/predictions", predictionRoutes);
@@ -51,6 +61,10 @@ app.get("/login", (req, res) => {
 
 app.get("/dashboard", (req, res) => {
   res.sendFile(path.join(frontendPath, "dashboard.html"));
+});
+
+app.get("/settings", (req, res) => {
+  res.sendFile(path.join(frontendPath, "settings.html"));
 });
 
 app.use(notFoundHandler);

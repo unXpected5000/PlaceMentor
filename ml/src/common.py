@@ -17,6 +17,7 @@ except Exception:  # pragma: no cover
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_PATH = ROOT / "data" / "sample_students.csv"
+FIRESTORE_DATA_PATH = ROOT / "data" / "firestore_students.csv"
 ARTIFACT_DIR = ROOT / "artifacts"
 PLACEMENT_MODEL_PATH = ARTIFACT_DIR / "placement_model.joblib"
 ROLE_MODEL_PATH = ARTIFACT_DIR / "role_model.joblib"
@@ -56,17 +57,39 @@ def group_score(items, group_name):
     return sum(1 for item in group_items if item in lowered)
 
 
+def role_alignment_score(skills, preferred_role):
+    preferred = normalize_text(preferred_role).lower()
+    if not preferred:
+        return 0
+
+    role_groups = {
+        "data analyst": "data",
+        "ml engineer": "data",
+        "software developer": "backend",
+        "frontend developer": "frontend",
+        "cloud support engineer": "cloud",
+        "support engineer": "soft",
+    }
+    group_name = role_groups.get(preferred)
+    if not group_name:
+        return 0
+    return group_score(skills, group_name)
+
+
 def build_feature_vector(record):
     skills = split_items(record.get("skills", []))
     projects = split_items(record.get("projects", []))
     certifications = split_items(record.get("certifications", []))
+    preferred_role = record.get("preferred_role", record.get("preferredRole", ""))
+    unique_skill_count = len(set(skills))
+    project_density = len(projects) / max(unique_skill_count or 1, 1)
 
     return [
         float(record.get("cgpa", 0)),
         float(record.get("aptitude_score", record.get("aptitudeScore", 0))),
         float(record.get("soft_skills_score", record.get("softSkillsScore", 0))),
         float(record.get("resume_score", record.get("resumeScore", 0))),
-        len(skills),
+        unique_skill_count,
         len(projects),
         len(certifications),
         group_score(skills, "frontend"),
@@ -74,12 +97,24 @@ def build_feature_vector(record):
         group_score(skills, "data"),
         group_score(skills, "cloud"),
         group_score(skills, "soft"),
+        len({group for group in SKILL_GROUPS if group_score(skills, group) > 0}),
+        role_alignment_score(skills, preferred_role),
+        project_density,
     ]
 
 
-def load_training_rows():
-    with open(DATA_PATH, "r", encoding="utf-8") as csv_file:
+def load_csv_rows(csv_path):
+    if not csv_path.exists():
+        return []
+
+    with open(csv_path, "r", encoding="utf-8") as csv_file:
         return list(csv.DictReader(csv_file))
+
+
+def load_training_rows():
+    base_rows = load_csv_rows(DATA_PATH)
+    firestore_rows = load_csv_rows(FIRESTORE_DATA_PATH)
+    return base_rows + firestore_rows
 
 
 def ensure_artifact_dir():
@@ -90,8 +125,17 @@ def train_models():
     rows = load_training_rows()
     features = np.array([build_feature_vector(row) for row in rows], dtype=float)
     placement_targets = np.array([int(row["placement_status"]) for row in rows], dtype=int)
-    role_targets = [row["predicted_role"] for row in rows]
-    salary_targets = np.array([float(row["expected_salary_lpa"]) for row in rows], dtype=float)
+    successful_rows = [
+        row
+        for row in rows
+        if int(row["placement_status"]) == 1
+        and normalize_text(row.get("predicted_role"))
+        and float(row.get("expected_salary_lpa", 0) or 0) > 0
+    ]
+    role_targets = [row["predicted_role"] for row in successful_rows]
+    salary_targets = np.array(
+        [float(row["expected_salary_lpa"]) for row in successful_rows], dtype=float
+    )
 
     label_encoder = LabelEncoder()
     encoded_roles = label_encoder.fit_transform(role_targets)
@@ -100,10 +144,22 @@ def train_models():
     placement_model.fit(features, placement_targets)
 
     role_model = RandomForestClassifier(n_estimators=250, random_state=42)
-    role_model.fit(features, encoded_roles)
+    role_model.fit(
+        np.array([build_feature_vector(row) for row in successful_rows], dtype=float),
+        encoded_roles,
+    )
 
     salary_model = RandomForestRegressor(n_estimators=250, random_state=42)
-    salary_model.fit(features, salary_targets)
+    salary_model.fit(
+        np.array([build_feature_vector(row) for row in successful_rows], dtype=float),
+        salary_targets,
+    )
+
+    placement_train_accuracy = float(placement_model.score(features, placement_targets))
+    role_features = np.array([build_feature_vector(row) for row in successful_rows], dtype=float)
+    role_train_accuracy = float(role_model.score(role_features, encoded_roles))
+    salary_predictions = salary_model.predict(role_features)
+    salary_mae = float(np.mean(np.abs(salary_predictions - salary_targets)))
 
     ensure_artifact_dir()
     joblib.dump(placement_model, PLACEMENT_MODEL_PATH)
@@ -119,6 +175,11 @@ def train_models():
             str(SALARY_MODEL_PATH),
             str(LABEL_ENCODER_PATH),
         ],
+        "metrics": {
+            "placementTrainAccuracy": round(placement_train_accuracy * 100, 2),
+            "roleTrainAccuracy": round(role_train_accuracy * 100, 2),
+            "salaryTrainMae": round(salary_mae, 2),
+        },
     }
 
 
@@ -295,9 +356,13 @@ def build_prediction_payload(student_input):
     placement_model, role_model, salary_model, label_encoder = ensure_models()
     feature_array = np.array([build_feature_vector(student_input)], dtype=float)
 
-    placement_probability = round(float(placement_model.predict_proba(feature_array)[0][1]) * 100, 2)
+    placement_probabilities = placement_model.predict_proba(feature_array)[0]
+    placement_probability = round(float(placement_probabilities[1]) * 100, 2)
+    placement_confidence = round(abs(placement_probability - 50) * 2, 2)
+    role_probabilities = role_model.predict_proba(feature_array)[0]
     predicted_role_index = int(role_model.predict(feature_array)[0])
     predicted_role = str(label_encoder.inverse_transform([predicted_role_index])[0])
+    role_confidence = round(float(np.max(role_probabilities)) * 100, 2)
     salary_lpa = round(float(salary_model.predict(feature_array)[0]), 2)
 
     suggestions = []
@@ -314,9 +379,55 @@ def build_prediction_payload(student_input):
     if not suggestions:
         suggestions.append("Keep applying consistently and tailor your resume to each company role.")
 
+    explainers = []
+    cgpa = float(student_input.get("cgpa", 0))
+    aptitude_score = float(student_input.get("aptitudeScore", 0))
+    soft_skills_score = float(student_input.get("softSkillsScore", 0))
+    resume_score = float(student_input.get("resumeScore", 0))
+    skills = split_items(student_input.get("skills", []))
+    projects = split_items(student_input.get("projects", []))
+    certifications = split_items(student_input.get("certifications", []))
+
+    if cgpa >= 8:
+        explainers.append("Strong CGPA improves eligibility across most campus companies.")
+    elif cgpa < 7:
+        explainers.append("Lower CGPA limits eligibility for some higher-cutoff companies.")
+
+    if aptitude_score >= 75:
+        explainers.append("Aptitude performance supports screening-round success.")
+    else:
+        explainers.append("Aptitude score is currently a weak point for shortlisting.")
+
+    if soft_skills_score >= 75:
+        explainers.append("Soft-skills score supports interview conversion potential.")
+
+    if resume_score >= 75:
+        explainers.append("Resume strength is helping your overall placement probability.")
+    else:
+        explainers.append("Resume strength is pulling the prediction downward.")
+
+    if len(projects) >= 2:
+        explainers.append("Project depth is improving role fit and salary expectations.")
+
+    if len(certifications) >= 1:
+        explainers.append("Certifications add credibility for your target role.")
+
+    dominant_groups = [
+        (group, group_score(skills, group))
+        for group in ["data", "backend", "frontend", "cloud"]
+    ]
+    dominant_groups.sort(key=lambda item: item[1], reverse=True)
+    if dominant_groups and dominant_groups[0][1] > 0:
+        explainers.append(
+            f"Your skill profile is strongest in {dominant_groups[0][0]}, which aligns with the predicted role."
+        )
+
     return {
         "placementProbability": placement_probability,
+        "confidenceScore": placement_confidence,
+        "roleConfidence": role_confidence,
         "predictedRole": predicted_role,
         "expectedSalaryLpa": salary_lpa,
         "improvementSuggestions": suggestions,
+        "explainWhy": explainers[:5],
     }

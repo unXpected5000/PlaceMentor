@@ -4,6 +4,28 @@ const { db, ensureFirebase, firebaseEnabled } = require("../config/firebaseAdmin
 
 const COMPANIES_PATH = path.resolve(__dirname, "../data/companies.json");
 
+function normalizeBoolean(value, fallback = false) {
+  if (typeof value === "boolean") {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    if (["true", "yes", "1", "placed"].includes(normalized)) {
+      return true;
+    }
+    if (["false", "no", "0", "not placed"].includes(normalized)) {
+      return false;
+    }
+  }
+
+  if (typeof value === "number") {
+    return value > 0;
+  }
+
+  return fallback;
+}
+
 function normalizeList(value) {
   if (Array.isArray(value)) {
     return value.map((item) => String(item).trim()).filter(Boolean);
@@ -81,6 +103,30 @@ function normalizeStudentProfile(payload = {}, options = {}) {
 
   if (!partial || Object.prototype.hasOwnProperty.call(payload, "notifications")) {
     result.notifications = normalizeList(payload.notifications);
+  }
+
+  if (!partial || Object.prototype.hasOwnProperty.call(payload, "placed")) {
+    result.placed = normalizeBoolean(payload.placed, false);
+  }
+
+  if (!partial || Object.prototype.hasOwnProperty.call(payload, "finalRole")) {
+    result.finalRole = payload.finalRole || "";
+  }
+
+  if (!partial || Object.prototype.hasOwnProperty.call(payload, "finalSalaryLpa")) {
+    result.finalSalaryLpa = Number(payload.finalSalaryLpa || 0);
+  }
+
+  if (!partial || Object.prototype.hasOwnProperty.call(payload, "placedCompany")) {
+    result.placedCompany = payload.placedCompany || "";
+  }
+
+  if (!partial || Object.prototype.hasOwnProperty.call(payload, "placementDate")) {
+    result.placementDate = payload.placementDate || "";
+  }
+
+  if (!partial || Object.prototype.hasOwnProperty.call(payload, "finalOutcomeNotes")) {
+    result.finalOutcomeNotes = String(payload.finalOutcomeNotes || "");
   }
 
   result.updatedAt = new Date().toISOString();

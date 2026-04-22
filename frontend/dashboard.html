@@ -4,10 +4,409 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Placement Mentor | Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+
+      #dashboardBody {
+        --theme-text: #f8fafc;
+        --theme-text-soft: #cbd5e1;
+        --theme-border: rgba(59, 130, 246, 0.2);
+        --theme-card: rgba(15, 23, 42, 0.72);
+        --theme-card-soft: rgba(255, 255, 255, 0.05);
+        --theme-surface-strong: rgba(2, 6, 23, 0.8);
+        --theme-panel: rgba(15, 23, 42, 0.7);
+        --theme-panel-strong: rgba(15, 23, 42, 0.92);
+        --theme-shadow: rgba(2, 6, 23, 0.3);
+        --theme-accent: #2563eb;
+        --theme-accent-soft: rgba(37, 99, 235, 0.12);
+        --theme-warm: #f97316;
+        --theme-warm-soft: rgba(249, 115, 22, 0.16);
+        font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+      }
+
+      #dashboardBody[data-theme="light"] {
+        --theme-text: #0f172a;
+        --theme-text-soft: #334155;
+        --theme-border: rgba(37, 99, 235, 0.18);
+        --theme-card: rgba(255, 255, 255, 0.92);
+        --theme-card-soft: rgba(239, 246, 255, 0.7);
+        --theme-surface-strong: rgba(248, 250, 252, 0.96);
+        --theme-panel: rgba(255, 255, 255, 0.84);
+        --theme-panel-strong: rgba(255, 255, 255, 0.96);
+        --theme-shadow: rgba(148, 163, 184, 0.22);
+        --theme-accent: #1d4ed8;
+        --theme-accent-soft: rgba(59, 130, 246, 0.1);
+        --theme-warm: #f97316;
+        --theme-warm-soft: rgba(249, 115, 22, 0.1);
+      }
+
+      #dashboardBody[data-theme="gray"] {
+        --theme-text: #f8fafc;
+        --theme-text-soft: #cbd5e1;
+        --theme-border: rgba(148, 163, 184, 0.2);
+        --theme-card: rgba(31, 41, 55, 0.86);
+        --theme-card-soft: rgba(51, 65, 85, 0.45);
+        --theme-surface-strong: rgba(17, 24, 39, 0.92);
+        --theme-panel: rgba(31, 41, 55, 0.82);
+        --theme-panel-strong: rgba(31, 41, 55, 0.94);
+        --theme-shadow: rgba(15, 23, 42, 0.3);
+        --theme-accent: #3b82f6;
+        --theme-accent-soft: rgba(59, 130, 246, 0.12);
+        --theme-warm: #fb923c;
+        --theme-warm-soft: rgba(251, 146, 60, 0.12);
+      }
+
+      #sidebar,
+      #mainPanel,
+      #topBar {
+        border-color: var(--theme-border) !important;
+        box-shadow: 0 24px 60px var(--theme-shadow);
+      }
+
+      #sidebar,
+      #mainPanel {
+        background: var(--theme-panel) !important;
+      }
+
+      #topBar {
+        background: var(--theme-panel-strong) !important;
+      }
+
+      #dashboardBody h1,
+      #dashboardBody h2,
+      #dashboardBody h3,
+      #dashboardBody p,
+      #dashboardBody span,
+      #dashboardBody th,
+      #dashboardBody td,
+      #dashboardBody label,
+      #dashboardBody li {
+        color: inherit;
+      }
+
+      #dashboardBody input:not([type="file"]):not([type="checkbox"]):not([type="hidden"]),
+      #dashboardBody textarea,
+      #dashboardBody select {
+        background: var(--theme-surface-strong) !important;
+        border-color: var(--theme-border) !important;
+        color: var(--theme-text) !important;
+      }
+
+      #dashboardBody input::placeholder,
+      #dashboardBody textarea::placeholder {
+        color: color-mix(in srgb, var(--theme-text-soft) 78%, transparent);
+      }
+
+      #studentSection > div > article,
+      #studentSection > div > div,
+      #studentSection form,
+      #facultySection > div > article,
+      #facultySection > div > div,
+      #facultySection form,
+      #tnpSection > div > article,
+      #tnpSection > div > div,
+      #tnpSection form {
+        border-color: var(--theme-border) !important;
+      }
+
+      #dashboardBody table,
+      #dashboardBody thead,
+      #dashboardBody tbody,
+      #dashboardBody tr {
+        border-color: var(--theme-border) !important;
+      }
+
+      .terna-ribbon {
+        background: linear-gradient(90deg, rgba(249, 115, 22, 0.92), rgba(37, 99, 235, 0.96));
+        box-shadow: 0 20px 45px rgba(37, 99, 235, 0.2);
+      }
+
+      .terna-ribbon-chip {
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+      }
+
+      .hero-panel {
+        background:
+          radial-gradient(circle at top right, var(--theme-warm-soft), transparent 28%),
+          radial-gradient(circle at bottom left, var(--theme-accent-soft), transparent 34%),
+          linear-gradient(135deg, color-mix(in srgb, var(--theme-accent) 14%, transparent), color-mix(in srgb, var(--theme-warm) 12%, transparent));
+        border: 1px solid var(--theme-border);
+      }
+
+      .accent-action {
+        background: linear-gradient(135deg, var(--theme-accent), #0ea5e9);
+        color: white;
+      }
+
+      .warm-action {
+        background: linear-gradient(135deg, var(--theme-warm), #fb7185);
+        color: white;
+      }
+
+      .soft-panel {
+        background: var(--theme-card-soft) !important;
+      }
+
+      .surface-panel {
+        background: var(--theme-card) !important;
+      }
+
+      .pm-card {
+        border: 1px solid var(--theme-border);
+        background: var(--theme-card-soft);
+        border-radius: 1.5rem;
+        box-shadow: 0 18px 48px var(--theme-shadow);
+        backdrop-filter: blur(16px);
+      }
+
+      .pm-button-primary,
+      .pm-button-secondary,
+      .pm-button-danger {
+        border-radius: 1rem;
+        font-weight: 700;
+        transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+      }
+
+      .pm-button-primary:hover,
+      .pm-button-secondary:hover,
+      .pm-button-danger:hover {
+        transform: translateY(-1px);
+      }
+
+      .pm-button-primary {
+        background: linear-gradient(135deg, #2563eb, #0ea5e9);
+        color: white;
+        box-shadow: 0 12px 28px rgba(37, 99, 235, 0.24);
+      }
+
+      .pm-button-secondary {
+        border: 1px solid var(--theme-border);
+        background: color-mix(in srgb, var(--theme-card-soft) 78%, transparent);
+        color: var(--theme-text);
+      }
+
+      .pm-button-danger {
+        background: linear-gradient(135deg, #dc2626, #f43f5e);
+        color: white;
+      }
+
+      .pm-input {
+        min-height: 3rem;
+        border-radius: 1rem;
+        outline: none;
+      }
+
+      .pm-input:focus {
+        border-color: var(--theme-accent) !important;
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent) 18%, transparent);
+      }
+
+      .pm-dropzone {
+        border: 1px dashed color-mix(in srgb, var(--theme-accent) 45%, var(--theme-border));
+        background:
+          radial-gradient(circle at top right, var(--theme-accent-soft), transparent 35%),
+          var(--theme-surface-strong);
+      }
+
+      .pm-dropzone.is-dragging {
+        border-color: var(--theme-warm);
+        box-shadow: 0 0 0 4px var(--theme-warm-soft);
+      }
+
+      .pm-chart-bar {
+        transition: height 240ms ease, width 240ms ease;
+      }
+
+      .pm-tooltip {
+        position: relative;
+      }
+
+      .pm-tooltip:hover::after,
+      .pm-tooltip:focus-visible::after {
+        content: attr(data-tip);
+        position: absolute;
+        z-index: 30;
+        left: 50%;
+        bottom: calc(100% + 0.5rem);
+        width: max-content;
+        max-width: 16rem;
+        transform: translateX(-50%);
+        border: 1px solid var(--theme-border);
+        border-radius: 0.85rem;
+        background: var(--theme-panel-strong);
+        color: var(--theme-text);
+        padding: 0.65rem 0.75rem;
+        font-size: 0.75rem;
+        line-height: 1.25rem;
+        box-shadow: 0 16px 36px var(--theme-shadow);
+      }
+
+      .loading-spinner {
+        display: inline-block;
+        width: 1rem;
+        height: 1rem;
+        border: 2px solid currentColor;
+        border-right-color: transparent;
+        border-radius: 9999px;
+        animation: spin 0.7s linear infinite;
+      }
+
+      .loading-pulse {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .loading-pulse::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+        transform: translateX(-100%);
+        animation: shimmer 1.2s infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes shimmer {
+        to {
+          transform: translateX(100%);
+        }
+      }
+
+      #dashboardBody .theme-text-main {
+        color: var(--theme-text) !important;
+      }
+
+      #dashboardBody .theme-text-soft {
+        color: var(--theme-text-soft) !important;
+      }
+
+      #dashboardBody[data-theme="light"] .text-white,
+      #dashboardBody[data-theme="light"] .text-slate-100,
+      #dashboardBody[data-theme="light"] .text-slate-200 {
+        color: var(--theme-text) !important;
+      }
+
+      #dashboardBody[data-theme="light"] .text-slate-300,
+      #dashboardBody[data-theme="light"] .text-slate-400,
+      #dashboardBody[data-theme="light"] .text-slate-500 {
+        color: var(--theme-text-soft) !important;
+      }
+
+      #dashboardBody[data-theme="light"] .bg-white\/5,
+      #dashboardBody[data-theme="light"] .bg-slate-900,
+      #dashboardBody[data-theme="light"] .bg-slate-900\/70,
+      #dashboardBody[data-theme="light"] .bg-slate-900\/92,
+      #dashboardBody[data-theme="light"] .bg-slate-950,
+      #dashboardBody[data-theme="light"] .bg-slate-950\/50,
+      #dashboardBody[data-theme="light"] .bg-slate-950\/60,
+      #dashboardBody[data-theme="light"] .bg-slate-950\/70 {
+        background: var(--theme-card) !important;
+      }
+
+      #dashboardBody[data-theme="light"] .border-white\/5,
+      #dashboardBody[data-theme="light"] .border-white\/10,
+      #dashboardBody[data-theme="light"] .border-white\/15,
+      #dashboardBody[data-theme="light"] .border-slate-700,
+      #dashboardBody[data-theme="light"] .border-slate-800 {
+        border-color: var(--theme-border) !important;
+      }
+
+      #dashboardBody[data-theme="light"] .hover\:bg-white\/10:hover,
+      #dashboardBody[data-theme="light"] .hover\:bg-white\/5:hover {
+        background: color-mix(in srgb, var(--theme-accent-soft) 70%, white) !important;
+      }
+
+      #dashboardBody[data-theme="light"] .bg-cyan-400\/10,
+      #dashboardBody[data-theme="light"] .bg-cyan-500\/10 {
+        background: rgba(37, 99, 235, 0.1) !important;
+      }
+
+      #dashboardBody[data-theme="light"] .text-cyan-200,
+      #dashboardBody[data-theme="light"] .text-cyan-300,
+      #dashboardBody[data-theme="light"] .text-cyan-200\/80 {
+        color: #1d4ed8 !important;
+      }
+
+      #dashboardBody[data-theme="light"] .bg-orange-500\/10,
+      #dashboardBody[data-theme="light"] .bg-orange-500\/15 {
+        background: rgba(249, 115, 22, 0.1) !important;
+      }
+
+      #dashboardBody[data-theme="light"] .text-orange-200,
+      #dashboardBody[data-theme="light"] .text-orange-300 {
+        color: #c2410c !important;
+      }
+
+      #dashboardBody[data-theme="light"] .bg-emerald-500\/10,
+      #dashboardBody[data-theme="light"] .bg-emerald-500\/15 {
+        background: rgba(16, 185, 129, 0.1) !important;
+      }
+
+      #dashboardBody[data-theme="light"] .text-emerald-200,
+      #dashboardBody[data-theme="light"] .text-emerald-300 {
+        color: #047857 !important;
+      }
+
+      #dashboardBody[data-theme="light"] .bg-red-500\/10,
+      #dashboardBody[data-theme="light"] .bg-red-500\/15 {
+        background: rgba(239, 68, 68, 0.1) !important;
+      }
+
+      #dashboardBody[data-theme="light"] .text-red-200,
+      #dashboardBody[data-theme="light"] .text-red-300 {
+        color: #b91c1c !important;
+      }
+
+      #dashboardBody[data-theme="gray"] .text-white,
+      #dashboardBody[data-theme="gray"] .text-slate-100,
+      #dashboardBody[data-theme="gray"] .text-slate-200 {
+        color: var(--theme-text) !important;
+      }
+
+      #dashboardBody[data-theme="gray"] .text-slate-300,
+      #dashboardBody[data-theme="gray"] .text-slate-400,
+      #dashboardBody[data-theme="gray"] .text-slate-500 {
+        color: var(--theme-text-soft) !important;
+      }
+
+      @media (min-width: 1280px) {
+        #sidebar {
+          position: sticky;
+          top: 1rem;
+          max-height: calc(100vh - 2rem);
+          overflow-y: auto;
+          align-self: start;
+        }
+      }
+    </style>
   </head>
-  <body id="dashboardBody" class="min-h-screen bg-slate-950 text-slate-100">
+  <body id="dashboardBody" data-theme="dark" class="min-h-screen bg-slate-950 text-slate-100">
     <div id="dashboardBackdrop" class="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(14,165,233,0.18),_transparent_28%),radial-gradient(circle_at_top_right,_rgba(249,115,22,0.14),_transparent_30%),linear-gradient(180deg,_#020617_0%,_#0f172a_58%,_#020617_100%)]"></div>
+    <div class="mx-auto max-w-[1500px] px-4 pt-4 lg:px-6">
+      <div class="terna-ribbon flex flex-col gap-3 rounded-[1.6rem] px-5 py-4 text-white lg:flex-row lg:items-center lg:justify-between">
+        <div>
+          <p class="text-xs uppercase tracking-[0.34em] text-white/75">Training &amp; Placement Cell</p>
+          <p class="mt-2 text-lg font-bold">Placement intelligence workspace</p>
+        </div>
+        <div class="flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.24em] text-white/90">
+          <span class="terna-ribbon-chip rounded-full px-3 py-2">Outcome-led training</span>
+          <span class="terna-ribbon-chip rounded-full px-3 py-2">Efficient</span>
+          <span class="terna-ribbon-chip rounded-full px-3 py-2">Placement analytics</span>
+        </div>
+      </div>
+    </div>
     <div class="mx-auto max-w-[1500px] px-4 py-4 lg:px-6">
       <div class="grid min-h-[calc(100vh-2rem)] gap-4 xl:grid-cols-[270px_1fr]">
         <aside id="sidebar" class="rounded-[2rem] border border-white/10 bg-slate-900/80 p-5 shadow-2xl shadow-black/30 backdrop-blur">
@@ -22,11 +421,8 @@
           <nav class="mt-6 space-y-3">
             <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
               <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Workspace</p>
-              <div class="mt-4 space-y-3 text-sm">
-                <div class="rounded-2xl bg-cyan-400/10 px-4 py-3 text-cyan-200">Overview</div>
-                <div class="rounded-2xl bg-white/5 px-4 py-3 text-slate-300">Predictions</div>
-                <div class="rounded-2xl bg-white/5 px-4 py-3 text-slate-300">Company Matching</div>
-                <div class="rounded-2xl bg-white/5 px-4 py-3 text-slate-300">Profile Intelligence</div>
+              <div id="workspaceNav" class="mt-4 space-y-3 text-sm">
+                <button type="button" class="w-full rounded-2xl bg-cyan-400/10 px-4 py-3 text-left text-cyan-200">Overview</button>
               </div>
             </div>
 
@@ -60,29 +456,36 @@
                 </span>
               </div>
               <div class="flex flex-wrap items-center gap-3">
+                <nav aria-label="Breadcrumb" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300">
+                  <span>Placementor</span>
+                  <span class="mx-2 text-slate-500">/</span>
+                  <span id="breadcrumbRole">Workspace</span>
+                  <span class="mx-2 text-slate-500">/</span>
+                  <span id="breadcrumbCurrent" class="font-semibold text-white">Dashboard</span>
+                </nav>
                 <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300">
                   Version <span class="font-semibold text-white">Test 1.0</span>
                 </div>
                 <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300">
                   College placement project, built to evolve with future iterations.
                 </div>
-                <button id="settingsButton" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10">
+                <button id="settingsButton" class="pm-button-secondary px-4 py-3 text-sm">
                   Settings
                 </button>
-                <button id="logoutButton" class="rounded-2xl bg-red-500/90 px-4 py-3 text-sm font-semibold text-white transition hover:bg-red-400">
+                <button id="logoutButton" class="pm-button-danger px-4 py-3 text-sm">
                   Logout
                 </button>
               </div>
             </div>
           </header>
 
-          <header class="rounded-[1.8rem] border border-white/10 bg-gradient-to-r from-slate-900 to-slate-800/70 p-6">
+          <header class="hero-panel rounded-[1.8rem] p-6">
             <div class="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
               <div>
                 <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Live Workspace</p>
                 <h2 class="mt-3 text-3xl font-black text-white lg:text-4xl">Prediction, readiness, and matching in one flow.</h2>
                 <p class="mt-3 max-w-3xl text-sm leading-7 text-slate-300">
-                  A more product-style dashboard inspired by modern analytics SaaS patterns: stronger hierarchy, visual status blocks, quick-glance cards, and richer decision support.
+                  A department-style dashboard with stronger blue and orange accents, institutional hierarchy, and outcome tracking that can now feed retraining data back into the ML pipeline.
                 </p>
               </div>
               <div class="grid gap-3 sm:grid-cols-3 xl:min-w-[460px]">
@@ -102,7 +505,7 @@
             </div>
           </header>
 
-          <div id="globalMessage" class="mt-4 hidden rounded-2xl px-4 py-3 text-sm"></div>
+          <div id="globalMessage" aria-live="polite" class="mt-4 hidden rounded-2xl px-4 py-3 text-sm"></div>
 
           <section id="studentSection" class="hidden space-y-6 pt-6">
             <div class="grid gap-4 lg:grid-cols-4">
@@ -129,7 +532,7 @@
             </div>
 
             <div class="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
-              <div class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+              <div id="studentOverviewPanel" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
                 <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                   <div>
                     <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Student Health</p>
@@ -143,7 +546,7 @@
                 <div id="studentReadinessChart" class="mt-6 grid gap-4 md:grid-cols-2"></div>
               </div>
 
-              <div class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+              <div id="studentTimelinePanel" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
                 <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Career Momentum</p>
                 <h3 class="mt-2 text-2xl font-bold text-white">Action Timeline</h3>
                 <div id="studentTimeline" class="mt-6 space-y-4"></div>
@@ -158,7 +561,7 @@
                     <h3 class="mt-2 text-2xl font-bold text-white">Student Profile</h3>
                     <p class="mt-2 text-sm text-slate-300">Persist your academic, portfolio, and skill signals to drive matching quality.</p>
                   </div>
-                  <button class="rounded-2xl bg-teal-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-teal-400">
+                  <button class="pm-button-primary px-5 py-3 text-sm">
                     Save Profile
                   </button>
                 </div>
@@ -172,15 +575,15 @@
                     <input name="graduationYear" type="number" placeholder="Enter graduation year" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
                   </label>
                   <label class="block text-sm text-slate-300">
-                    <span class="mb-2 block">Aptitude Score</span>
+                    <span class="mb-2 block">Aptitude Score (out of 100)</span>
                     <input name="aptitudeScore" type="number" min="0" max="100" placeholder="Enter aptitude score" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
                   </label>
                   <label class="block text-sm text-slate-300">
-                    <span class="mb-2 block">Soft Skills Score</span>
+                    <span class="mb-2 block">Soft Skills Score (out of 100)</span>
                     <input name="softSkillsScore" type="number" min="0" max="100" placeholder="Enter soft skills score" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
                   </label>
                   <label class="block text-sm text-slate-300">
-                    <span class="mb-2 block">Resume Score</span>
+                    <span class="mb-2 block">Resume Score (out of 100)</span>
                     <input name="resumeScore" type="number" min="0" max="100" placeholder="Enter resume score" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
                   </label>
                   <label class="block text-sm text-slate-300">
@@ -207,13 +610,13 @@
               </form>
 
               <div class="space-y-4">
-                <div class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+                <div id="studentPredictionPanel" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
                   <div class="mb-5 flex items-center justify-between">
                     <div>
                       <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Prediction Engine</p>
                       <h3 class="mt-2 text-2xl font-bold text-white">Career Forecast</h3>
                     </div>
-                    <button id="predictButton" type="button" class="rounded-2xl bg-indigo-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-400">
+                    <button id="predictButton" type="button" class="pm-button-primary px-5 py-3 text-sm">
                       Predict
                     </button>
                   </div>
@@ -228,8 +631,15 @@
                     <h3 class="mt-2 text-2xl font-bold text-white">ATS Review</h3>
                     <p class="mt-2 text-sm text-slate-300">Upload PDF or DOCX when Firebase Storage is enabled on your project.</p>
                   </div>
-                  <input id="resumeFile" type="file" accept=".pdf,.docx" class="block w-full rounded-2xl border border-dashed border-slate-600 bg-slate-950 px-4 py-8 text-sm text-slate-300" />
-                  <button class="mt-4 w-full rounded-2xl bg-orange-500 px-4 py-3 font-semibold text-white transition hover:bg-orange-400">
+                  <label id="resumeDropzone" for="resumeFile" class="pm-dropzone block cursor-pointer rounded-[1.5rem] px-5 py-8 text-center text-sm text-slate-300 transition">
+                    <span class="block text-base font-bold text-white">Drag and drop resume here</span>
+                    <span id="resumeFileName" class="mt-2 block text-sm text-slate-300">or click to choose a PDF/DOCX file</span>
+                    <span class="mt-4 block h-2 overflow-hidden rounded-full bg-slate-800">
+                      <span id="resumeUploadProgress" class="block h-full w-0 rounded-full bg-gradient-to-r from-orange-400 to-cyan-400 transition-all"></span>
+                    </span>
+                  </label>
+                  <input id="resumeFile" type="file" accept=".pdf,.docx" class="sr-only" />
+                  <button class="pm-button-primary mt-4 w-full px-4 py-3">
                     Analyze Resume
                   </button>
                 </form>
@@ -246,7 +656,7 @@
                   Resume feedback will appear here.
                 </div>
               </div>
-              <div class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+              <div id="studentCompanyPanel" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
                 <div class="mb-4 flex items-end justify-between">
                   <div>
                     <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Company Matching</p>
@@ -297,7 +707,7 @@
             </div>
 
             <div class="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
-              <div class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+              <div id="facultyOverviewPanel" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
                 <div class="mb-5 flex items-center justify-between">
                   <div>
                     <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Monitoring Table</p>
@@ -310,7 +720,7 @@
                 <div id="facultyStudentTable" class="overflow-x-auto text-sm text-slate-300"></div>
               </div>
 
-              <form id="facultyEditForm" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+              <form id="facultyEditForm" data-panel-id="facultyProfilePanel" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
                 <div class="mb-5">
                   <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Student Editor</p>
                   <h3 class="mt-2 text-2xl font-bold text-white">Update Profile</h3>
@@ -323,16 +733,16 @@
                     <input name="cgpa" type="number" step="0.01" placeholder="Enter CGPA" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
                   </label>
                   <label class="block text-sm text-slate-300">
-                    <span class="mb-2 block">Aptitude Score</span>
-                    <input name="aptitudeScore" type="number" placeholder="Enter aptitude score" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
+                    <span class="mb-2 block">Aptitude Score (out of 100)</span>
+                    <input name="aptitudeScore" type="number" min="0" max="100" placeholder="Enter aptitude score" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
                   </label>
                   <label class="block text-sm text-slate-300">
-                    <span class="mb-2 block">Soft Skills Score</span>
-                    <input name="softSkillsScore" type="number" placeholder="Enter soft skills score" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
+                    <span class="mb-2 block">Soft Skills Score (out of 100)</span>
+                    <input name="softSkillsScore" type="number" min="0" max="100" placeholder="Enter soft skills score" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
                   </label>
                   <label class="block text-sm text-slate-300">
-                    <span class="mb-2 block">Resume Score</span>
-                    <input name="resumeScore" type="number" placeholder="Enter resume score" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
+                    <span class="mb-2 block">Resume Score (out of 100)</span>
+                    <input name="resumeScore" type="number" min="0" max="100" placeholder="Enter resume score" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
                   </label>
                   <label class="block text-sm text-slate-300">
                     <span class="mb-2 block">Application Status</span>
@@ -384,7 +794,7 @@
           </section>
 
           <section id="tnpSection" class="hidden space-y-6 pt-6">
-            <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-7">
               <article class="rounded-[1.6rem] border border-white/10 bg-white/5 p-5">
                 <p class="text-xs uppercase tracking-[0.25em] text-slate-500">Total Students</p>
                 <p id="metricTotalStudents" class="mt-3 text-4xl font-black text-white">0</p>
@@ -401,17 +811,143 @@
                 <p class="text-xs uppercase tracking-[0.25em] text-slate-500">Companies</p>
                 <p id="metricTotalCompanies" class="mt-3 text-4xl font-black text-white">0</p>
               </article>
+              <article class="rounded-[1.6rem] border border-white/10 bg-white/5 p-5">
+                <p class="text-xs uppercase tracking-[0.25em] text-slate-500">Avg Package</p>
+                <p id="metricAveragePackage" class="mt-3 text-4xl font-black text-white">0L</p>
+              </article>
+              <article class="rounded-[1.6rem] border border-white/10 bg-white/5 p-5">
+                <p class="text-xs uppercase tracking-[0.25em] text-slate-500">Placed</p>
+                <p id="metricPlacedStudents" class="mt-3 text-4xl font-black text-white">0</p>
+              </article>
+              <article class="rounded-[1.6rem] border border-white/10 bg-white/5 p-5">
+                <p class="text-xs uppercase tracking-[0.25em] text-slate-500">Not Placed</p>
+                <p id="metricNotPlacedStudents" class="mt-3 text-4xl font-black text-white">0</p>
+              </article>
+            </div>
+
+            <div id="tnpFilterPanel" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-5">
+              <div class="grid gap-4 lg:grid-cols-[1fr_220px_220px] lg:items-end">
+                <div>
+                  <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Analytics Controls</p>
+                  <h3 class="mt-2 text-2xl font-bold text-white">Filter placement intelligence</h3>
+                  <p class="mt-2 text-sm text-slate-300">Use year and department filters to reduce noise in TNP analytics without making extra API calls.</p>
+                </div>
+                <label class="block text-sm text-slate-300">
+                  <span class="mb-2 block">Year</span>
+                  <select id="tnpYearFilter" class="pm-input w-full border border-slate-700 bg-slate-950 px-4 py-3">
+                    <option value="all">All years</option>
+                  </select>
+                </label>
+                <label class="block text-sm text-slate-300">
+                  <span class="mb-2 block">Department</span>
+                  <select id="tnpDepartmentFilter" class="pm-input w-full border border-slate-700 bg-slate-950 px-4 py-3">
+                    <option value="all">All departments</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+
+            <div class="grid gap-4 xl:grid-cols-[1.05fr_0.95fr]">
+              <div id="tnpTrainingPanel" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+                <div class="mb-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                  <div>
+                    <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Model Learning Loop</p>
+                    <h3 class="mt-2 text-2xl font-bold text-white">Export and Retrain</h3>
+                    <p class="mt-2 text-sm text-slate-300">Push labeled outcomes from Firestore into CSV, then retrain the local models with your institution's placement history.</p>
+                  </div>
+                  <div class="grid gap-3 sm:grid-cols-2">
+                    <button id="tnpExportTrainingButton" class="accent-action rounded-2xl px-4 py-3 text-sm font-semibold">
+                      Export Training CSV
+                    </button>
+                    <button id="tnpRetrainButton" class="warm-action rounded-2xl px-4 py-3 text-sm font-semibold">
+                      Retrain Models
+                    </button>
+                  </div>
+                </div>
+                <div id="tnpTrainingStatus" class="rounded-2xl border border-white/10 bg-slate-950/50 px-4 py-4 text-sm text-slate-300">
+                  Labeled student outcomes will appear here after export or retraining.
+                </div>
+              </div>
+
+              <div id="tnpOverviewPanel" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+                <div class="mb-4">
+                  <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Outcome Coverage</p>
+                  <h3 class="mt-2 text-2xl font-bold text-white">Training Readiness</h3>
+                </div>
+                <div id="tnpOutcomeSummary" class="space-y-3 text-sm text-slate-300">
+                  <div class="rounded-2xl border border-white/10 bg-slate-950/50 px-4 py-4">
+                    Outcome coverage updates as TNP marks students placed or not placed.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid gap-4 xl:grid-cols-[1fr_1fr]">
+              <div id="tnpModelPerformancePanel" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+                <div class="mb-4">
+                  <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Model Performance</p>
+                  <h3 class="mt-2 text-2xl font-bold text-white">Prediction Quality Dashboard</h3>
+                </div>
+                <div id="tnpModelPerformance" class="space-y-3 text-sm text-slate-300">
+                  Model performance metrics will appear here once labeled outcomes exist.
+                </div>
+              </div>
+
+              <div id="tnpRetrainHistoryPanel" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+                <div class="mb-4">
+                  <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Retraining History</p>
+                  <h3 class="mt-2 text-2xl font-bold text-white">Latest Retrain Logs</h3>
+                </div>
+                <div id="tnpRetrainHistory" class="space-y-3 text-sm text-slate-300">
+                  Retraining history will appear here after the first export or retrain.
+                </div>
+              </div>
+            </div>
+
+            <div id="tnpAnalyticsPanel" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+              <div class="mb-5 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+                <div>
+                  <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Analytics</p>
+                  <h3 class="mt-2 text-2xl font-bold text-white">Placement trends and distribution</h3>
+                  <p class="mt-2 text-sm text-slate-300">Lightweight charts rendered without extra dependencies for faster load and cleaner maintenance.</p>
+                </div>
+                <span class="rounded-full bg-cyan-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-cyan-300">Filtered View</span>
+              </div>
+              <div class="grid gap-4 xl:grid-cols-3">
+                <div class="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
+                  <p class="font-semibold text-white">Placement Trend</p>
+                  <div id="placementTrendChart" class="mt-4 min-h-48"></div>
+                </div>
+                <div class="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
+                  <p class="font-semibold text-white">Branch-wise Readiness</p>
+                  <div id="branchWiseChart" class="mt-4 min-h-48"></div>
+                </div>
+                <div class="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
+                  <p class="font-semibold text-white">Company Sector Mix</p>
+                  <div id="sectorDistributionChart" class="mt-4 min-h-48"></div>
+                </div>
+              </div>
+            </div>
+
+            <div id="tnpPredictionActualPanel" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+              <div class="mb-4">
+                <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Predicted Vs Actual</p>
+                <h3 class="mt-2 text-2xl font-bold text-white">Role and Salary Comparison</h3>
+              </div>
+              <div id="tnpPredictionActualTable" class="overflow-x-auto text-sm text-slate-300">
+                Prediction vs actual comparisons will appear here when outcomes are labeled.
+              </div>
             </div>
 
             <div class="grid gap-4 xl:grid-cols-[0.9fr_1.1fr]">
-              <div class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+              <div id="tnpPortfolioPanel" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
                 <div class="mb-4">
                   <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Role Distribution</p>
                   <h3 class="mt-2 text-2xl font-bold text-white">Portfolio Mix</h3>
                 </div>
                 <div id="roleDistribution" class="space-y-3 text-sm text-slate-300"></div>
               </div>
-              <div class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+              <div id="tnpFunnelPanel" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
                 <div class="mb-4">
                   <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Placement Funnel</p>
                   <h3 class="mt-2 text-2xl font-bold text-white">Readiness Stages</h3>
@@ -420,8 +956,62 @@
               </div>
             </div>
 
+            <div class="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
+              <div id="tnpOutcomePanel" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+                <div class="mb-4 flex items-center justify-between">
+                  <div>
+                    <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Placement Outcomes</p>
+                    <h3 class="mt-2 text-2xl font-bold text-white">Student Outcome Tracker</h3>
+                  </div>
+                  <span class="rounded-full bg-orange-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-orange-300">TNP Controlled</span>
+                </div>
+                <div id="tnpOutcomeTable" class="overflow-x-auto text-sm text-slate-300"></div>
+              </div>
+
+              <form id="tnpOutcomeForm" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+                <div class="mb-5">
+                  <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Outcome Editor</p>
+                  <h3 class="mt-2 text-2xl font-bold text-white">Mark Placed / Not Placed</h3>
+                  <p id="tnpSelectedStudent" class="mt-2 text-sm text-slate-300">Select a student from the table to record final placement outcomes.</p>
+                </div>
+                <input type="hidden" name="studentId" />
+                <div class="grid gap-4 md:grid-cols-2">
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Placement Result</span>
+                    <select name="placed" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3">
+                      <option value="true">Placed</option>
+                      <option value="false">Not Placed</option>
+                    </select>
+                  </label>
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Placement Date</span>
+                    <input name="placementDate" type="date" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" />
+                  </label>
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Final Role</span>
+                    <input name="finalRole" type="text" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" placeholder="Actual selected role" />
+                  </label>
+                  <label class="block text-sm text-slate-300">
+                    <span class="mb-2 block">Final Salary (LPA)</span>
+                    <input name="finalSalaryLpa" type="number" step="0.1" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" placeholder="Actual package" />
+                  </label>
+                  <label class="block text-sm text-slate-300 md:col-span-2">
+                    <span class="mb-2 block">Placed Company</span>
+                    <input name="placedCompany" type="text" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" placeholder="Company name" />
+                  </label>
+                  <label class="block text-sm text-slate-300 md:col-span-2">
+                    <span class="mb-2 block">Outcome Notes</span>
+                    <textarea name="finalOutcomeNotes" class="min-h-28 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3" placeholder="Offer details, constraints, joining comments, fallback notes"></textarea>
+                  </label>
+                </div>
+                <button class="mt-4 w-full rounded-2xl bg-orange-500 px-5 py-3 font-semibold text-white transition hover:bg-orange-400">
+                  Save Outcome
+                </button>
+              </form>
+            </div>
+
             <div class="grid gap-4 xl:grid-cols-[1fr_1fr]">
-              <div class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+              <div id="tnpCompanyFormPanel" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
                 <div class="mb-4 flex items-center justify-between">
                   <div>
                     <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Company Management</p>
@@ -465,7 +1055,7 @@
                 </form>
               </div>
 
-              <div class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+              <div id="tnpGroupingPanel" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
                 <div class="mb-4">
                   <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Grouping Views</p>
                   <h3 class="mt-2 text-2xl font-bold text-white">Students By Role / Stage</h3>
@@ -474,7 +1064,7 @@
               </div>
             </div>
 
-            <div class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+            <div id="tnpCompanyMatchPanel" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
               <div class="mb-4">
                 <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Company Match Board</p>
                 <h3 class="mt-2 text-2xl font-bold text-white">Shortlist Intelligence</h3>
@@ -482,7 +1072,7 @@
               <div id="companyMatchBoard" class="overflow-x-auto text-sm text-slate-300"></div>
             </div>
 
-            <div class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
+            <div id="tnpCompanyListPanel" class="rounded-[1.8rem] border border-white/10 bg-white/5 p-6">
               <div class="mb-4">
                 <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Live Company List</p>
                 <h3 class="mt-2 text-2xl font-bold text-white">Company Eligibility Rules</h3>
@@ -494,80 +1084,7 @@
       </div>
     </div>
 
-    <div id="settingsPanel" class="pointer-events-none fixed inset-y-4 right-4 z-20 w-full max-w-md translate-x-[110%] rounded-[2rem] border border-white/10 bg-slate-900/95 p-6 opacity-0 shadow-2xl shadow-black/40 transition duration-300">
-      <div class="flex items-start justify-between gap-4">
-        <div>
-          <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Workspace Settings</p>
-          <h3 class="mt-2 text-2xl font-bold text-white">Personalize Dashboard</h3>
-          <p class="mt-2 text-sm leading-6 text-slate-300">Small quality-of-life controls for this project version. More settings can be added in future releases.</p>
-        </div>
-        <button id="closeSettingsButton" class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-300">Close</button>
-      </div>
-
-      <div class="mt-6 space-y-5">
-        <section class="rounded-2xl border border-white/10 bg-white/5 p-4">
-          <p class="text-sm font-semibold text-white">Profile</p>
-          <div class="mt-4 space-y-4">
-            <label class="block text-sm text-slate-300">
-              <span class="mb-2 block">Display Name</span>
-              <input id="settingsNameInput" type="text" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white" placeholder="Enter your display name" />
-            </label>
-            <label class="block text-sm text-slate-300">
-              <span class="mb-2 block">Department</span>
-              <input id="settingsDepartmentInput" type="text" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white" placeholder="Enter department" />
-            </label>
-            <button id="saveProfileSettingsButton" class="w-full rounded-2xl bg-cyan-500 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-400">
-              Save Profile Changes
-            </button>
-          </div>
-        </section>
-
-        <section class="rounded-2xl border border-white/10 bg-white/5 p-4">
-          <p class="text-sm font-semibold text-white">Password</p>
-          <div class="mt-4 space-y-4">
-            <label class="block text-sm text-slate-300">
-              <span class="mb-2 block">New Password</span>
-              <input id="settingsPasswordInput" type="password" class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white" placeholder="Minimum 6 characters" />
-            </label>
-            <button id="changePasswordButton" class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
-              Change Password
-            </button>
-          </div>
-        </section>
-
-        <section class="rounded-2xl border border-white/10 bg-white/5 p-4">
-          <p class="text-sm font-semibold text-white">Theme Mode</p>
-          <div class="mt-4 grid grid-cols-3 gap-3">
-            <button data-theme="dark" class="theme-option rounded-2xl border border-white/10 bg-slate-950 px-3 py-4 text-sm font-semibold text-slate-200">Dark</button>
-            <button data-theme="light" class="theme-option rounded-2xl border border-white/10 bg-slate-100 px-3 py-4 text-sm font-semibold text-slate-900">Light</button>
-            <button data-theme="gray" class="theme-option rounded-2xl border border-white/10 bg-slate-500/20 px-3 py-4 text-sm font-semibold text-slate-200">Gray</button>
-          </div>
-        </section>
-
-        <section class="rounded-2xl border border-white/10 bg-white/5 p-4">
-          <div class="flex items-center justify-between gap-4">
-            <div>
-              <p class="text-sm font-semibold text-white">Compact Sidebar Notes</p>
-              <p class="mt-1 text-sm text-slate-400">Hide the sidebar helper blocks for a cleaner workspace.</p>
-            </div>
-            <label class="inline-flex cursor-pointer items-center">
-              <input id="compactModeToggle" type="checkbox" class="peer sr-only" />
-              <span class="h-7 w-12 rounded-full bg-slate-700 transition after:ml-1 after:block after:h-5 after:w-5 after:translate-y-1 after:rounded-full after:bg-white after:transition peer-checked:bg-cyan-500 peer-checked:after:translate-x-5"></span>
-            </label>
-          </div>
-        </section>
-
-        <section class="rounded-2xl border border-white/10 bg-white/5 p-4">
-          <p class="text-sm font-semibold text-white">Project Info</p>
-          <ul class="mt-3 space-y-2 text-sm leading-6 text-slate-300">
-            <li>Version: MVP 1.0</li>
-            <li>Status: Active student placement project</li>
-            <li>Roadmap: Resume upload improvements, richer charts, more settings, and design refinements can be added later.</li>
-          </ul>
-        </section>
-      </div>
-    </div>
-
+    <script src="/app-config.js"></script>
     <script type="module" src="/js/dashboard.js"></script>
   </body>
 </html>

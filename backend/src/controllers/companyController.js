@@ -8,7 +8,7 @@ const {
   saveCompany,
   deleteCompany,
 } = require("../services/studentService");
-const { buildCompanyMatches } = require("../utils/companyMatcher");
+const { buildCompanyMatches, buildCompanyOutcomeStats } = require("../utils/companyMatcher");
 
 const getCompanies = asyncHandler(async (req, res) => {
   const companies = await listCompanies();
@@ -17,12 +17,14 @@ const getCompanies = asyncHandler(async (req, res) => {
 
 const getCompanyMatches = asyncHandler(async (req, res) => {
   const targetStudentId = req.query.studentId || req.user.uid;
-  const [user, profile, prediction, companies] = await Promise.all([
+  const [user, profile, prediction, companies, students] = await Promise.all([
     getUserProfile(targetStudentId),
     getStudentProfile(targetStudentId),
     getPrediction(targetStudentId),
     listCompanies(),
+    listStudents(),
   ]);
+  const outcomeStats = buildCompanyOutcomeStats(students);
 
   const matches = buildCompanyMatches(
     {
@@ -31,7 +33,8 @@ const getCompanyMatches = asyncHandler(async (req, res) => {
       profile,
       prediction,
     },
-    companies
+    companies,
+    { outcomeStats }
   );
 
   res.json({
@@ -42,13 +45,14 @@ const getCompanyMatches = asyncHandler(async (req, res) => {
 
 const getCompanyMatchBoard = asyncHandler(async (req, res) => {
   const [students, companies] = await Promise.all([listStudents(), listCompanies()]);
+  const outcomeStats = buildCompanyOutcomeStats(students);
 
   const board = students.map((student) => ({
     uid: student.uid,
     name: student.name,
     email: student.email,
     prediction: student.prediction || null,
-    topMatches: buildCompanyMatches(student, companies).slice(0, 3),
+    topMatches: buildCompanyMatches(student, companies, { outcomeStats }).slice(0, 3),
   }));
 
   res.json({

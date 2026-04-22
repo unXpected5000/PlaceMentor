@@ -3,10 +3,13 @@ import {
   hasFirebaseConfig,
   onAuthStateChanged,
   signOut,
-  updatePassword,
-  updateProfile,
 } from "./firebase.js";
 import { apiRequest } from "./api.js";
+import { readSettings } from "./shared/preferences.js";
+import { renderAvatar, storeAvatarFromFile } from "./shared/avatar.js";
+import { createMessagePresenter } from "./shared/messages.js";
+import { fillForm, formatPercentage, downloadCsv } from "./shared/forms.js";
+import { applyDashboardTheme } from "./shared/themes.js";
 
 const globalMessage = document.getElementById("globalMessage");
 const roleBadge = document.getElementById("roleBadge");
@@ -14,10 +17,8 @@ const logoutButton = document.getElementById("logoutButton");
 const topBarName = document.getElementById("topBarName");
 const topBarEmail = document.getElementById("topBarEmail");
 const settingsButton = document.getElementById("settingsButton");
-const closeSettingsButton = document.getElementById("closeSettingsButton");
-const settingsPanel = document.getElementById("settingsPanel");
-const compactModeToggle = document.getElementById("compactModeToggle");
-const themeOptions = document.querySelectorAll(".theme-option");
+const breadcrumbRole = document.getElementById("breadcrumbRole");
+const breadcrumbCurrent = document.getElementById("breadcrumbCurrent");
 const dashboardBackdrop = document.getElementById("dashboardBackdrop");
 const dashboardBody = document.getElementById("dashboardBody");
 const topBar = document.getElementById("topBar");
@@ -26,11 +27,6 @@ const mainPanel = document.getElementById("mainPanel");
 const avatarInput = document.getElementById("avatarInput");
 const avatarImage = document.getElementById("avatarImage");
 const avatarInitials = document.getElementById("avatarInitials");
-const settingsNameInput = document.getElementById("settingsNameInput");
-const settingsDepartmentInput = document.getElementById("settingsDepartmentInput");
-const saveProfileSettingsButton = document.getElementById("saveProfileSettingsButton");
-const settingsPasswordInput = document.getElementById("settingsPasswordInput");
-const changePasswordButton = document.getElementById("changePasswordButton");
 
 const studentSection = document.getElementById("studentSection");
 const facultySection = document.getElementById("facultySection");
@@ -39,6 +35,9 @@ const tnpSection = document.getElementById("tnpSection");
 const studentProfileForm = document.getElementById("studentProfileForm");
 const resumeUploadForm = document.getElementById("resumeUploadForm");
 const resumeFileInput = document.getElementById("resumeFile");
+const resumeDropzone = document.getElementById("resumeDropzone");
+const resumeFileName = document.getElementById("resumeFileName");
+const resumeUploadProgress = document.getElementById("resumeUploadProgress");
 const predictionButton = document.getElementById("predictButton");
 const predictionResult = document.getElementById("predictionResult");
 const resumeAnalysisResult = document.getElementById("resumeAnalysisResult");
@@ -69,68 +68,38 @@ const companyForm = document.getElementById("companyForm");
 const tnpExportStudentsButton = document.getElementById("tnpExportStudentsButton");
 const tnpGroupingBoard = document.getElementById("tnpGroupingBoard");
 const tnpCompanyList = document.getElementById("tnpCompanyList");
+const workspaceNav = document.getElementById("workspaceNav");
+const tnpYearFilter = document.getElementById("tnpYearFilter");
+const tnpDepartmentFilter = document.getElementById("tnpDepartmentFilter");
+const placementTrendChart = document.getElementById("placementTrendChart");
+const branchWiseChart = document.getElementById("branchWiseChart");
+const sectorDistributionChart = document.getElementById("sectorDistributionChart");
+const tnpOutcomeTable = document.getElementById("tnpOutcomeTable");
+const tnpOutcomeForm = document.getElementById("tnpOutcomeForm");
+const tnpSelectedStudent = document.getElementById("tnpSelectedStudent");
+const tnpExportTrainingButton = document.getElementById("tnpExportTrainingButton");
+const tnpRetrainButton = document.getElementById("tnpRetrainButton");
+const tnpTrainingStatus = document.getElementById("tnpTrainingStatus");
+const tnpOutcomeSummary = document.getElementById("tnpOutcomeSummary");
+const tnpModelPerformance = document.getElementById("tnpModelPerformance");
+const tnpRetrainHistory = document.getElementById("tnpRetrainHistory");
+const tnpPredictionActualTable = document.getElementById("tnpPredictionActualTable");
+const metricAveragePackage = document.getElementById("metricAveragePackage");
 
 let selectedStudentId = "";
+let selectedTnpStudentId = "";
 let currentProfile = null;
 let facultyStudentsCache = [];
 let tnpStudentsCache = [];
 let tnpCompaniesCache = [];
-const SETTINGS_STORAGE_KEY = "placement-mentor-settings";
-const AVATAR_STORAGE_KEY_PREFIX = "placement-mentor-avatar";
-
-function readSettings() {
-  try {
-    return JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY) || "{}");
-  } catch (error) {
-    return {};
-  }
-}
-
-function saveSettings(settings) {
-  localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
-}
+const showMessage = createMessagePresenter(globalMessage, "mb-6");
 
 function applyTheme(theme) {
-  const themes = {
-    dark: {
-      backdrop:
-        "fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(14,165,233,0.18),_transparent_28%),radial-gradient(circle_at_top_right,_rgba(249,115,22,0.14),_transparent_30%),linear-gradient(180deg,_#020617_0%,_#0f172a_58%,_#020617_100%)]",
-      body: "min-h-screen bg-slate-950 text-slate-100",
-      panel:
-        "rounded-[2rem] border border-white/10 bg-slate-900/55 p-4 shadow-2xl shadow-black/25 backdrop-blur lg:p-6",
-      top:
-        "sticky top-4 z-10 mb-4 rounded-[1.8rem] border border-white/10 bg-slate-900/92 px-5 py-4 shadow-lg shadow-black/20 backdrop-blur",
-    },
-    light: {
-      backdrop:
-        "fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.18),_transparent_26%),radial-gradient(circle_at_top_right,_rgba(251,191,36,0.12),_transparent_28%),linear-gradient(180deg,_#f8fafc_0%,_#e2e8f0_100%)]",
-      body: "min-h-screen bg-slate-100 text-slate-900",
-      panel:
-        "rounded-[2rem] border border-slate-200 bg-white/80 p-4 shadow-2xl shadow-slate-300/30 backdrop-blur lg:p-6",
-      top:
-        "sticky top-4 z-10 mb-4 rounded-[1.8rem] border border-slate-200 bg-white/92 px-5 py-4 shadow-lg shadow-slate-300/20 backdrop-blur",
-    },
-    gray: {
-      backdrop:
-        "fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(148,163,184,0.2),_transparent_26%),radial-gradient(circle_at_top_right,_rgba(99,102,241,0.08),_transparent_30%),linear-gradient(180deg,_#111827_0%,_#1f2937_55%,_#374151_100%)]",
-      body: "min-h-screen bg-slate-900 text-slate-100",
-      panel:
-        "rounded-[2rem] border border-slate-500/25 bg-slate-800/70 p-4 shadow-2xl shadow-black/25 backdrop-blur lg:p-6",
-      top:
-        "sticky top-4 z-10 mb-4 rounded-[1.8rem] border border-slate-500/25 bg-slate-800/92 px-5 py-4 shadow-lg shadow-black/20 backdrop-blur",
-    },
-  };
-
-  const selected = themes[theme] || themes.dark;
-  dashboardBackdrop.className = selected.backdrop;
-  dashboardBody.className = selected.body;
-  mainPanel.className = selected.panel;
-  topBar.className = selected.top;
-
-  themeOptions.forEach((option) => {
-    const isActive = option.dataset.theme === theme;
-    option.classList.toggle("ring-2", isActive);
-    option.classList.toggle("ring-white", isActive);
+  applyDashboardTheme(theme, {
+    backdrop: dashboardBackdrop,
+    body: dashboardBody,
+    mainPanel,
+    topBar,
   });
 }
 
@@ -144,68 +113,11 @@ function applyCompactMode(enabled) {
 function applyStoredSettings() {
   const settings = {
     theme: "dark",
-    compactMode: false,
     ...readSettings(),
   };
 
   applyTheme(settings.theme);
   applyCompactMode(Boolean(settings.compactMode));
-  compactModeToggle.checked = Boolean(settings.compactMode);
-}
-
-function openSettingsPanel() {
-  settingsPanel.classList.remove("pointer-events-none", "translate-x-[110%]", "opacity-0");
-  settingsPanel.classList.add("translate-x-0", "opacity-100");
-}
-
-function closeSettingsPanel() {
-  settingsPanel.classList.add("pointer-events-none", "translate-x-[110%]", "opacity-0");
-  settingsPanel.classList.remove("translate-x-0", "opacity-100");
-}
-
-function getInitials(name = "", email = "") {
-  const source = String(name || "").trim() || String(email || "").trim();
-  const parts = source.split(" ").filter(Boolean);
-  if (parts.length >= 2) {
-    return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
-  }
-  return source.slice(0, 2).toUpperCase() || "--";
-}
-
-function getAvatarStorageKey(uid) {
-  return `${AVATAR_STORAGE_KEY_PREFIX}-${uid}`;
-}
-
-function renderAvatar(profile) {
-  if (!profile) {
-    avatarInitials.textContent = "--";
-    avatarImage.classList.add("hidden");
-    avatarInitials.classList.remove("hidden");
-    avatarImage.removeAttribute("src");
-    return;
-  }
-
-  const avatarData = localStorage.getItem(getAvatarStorageKey(profile.uid));
-  if (avatarData) {
-    avatarImage.src = avatarData;
-    avatarImage.classList.remove("hidden");
-    avatarInitials.classList.add("hidden");
-  } else {
-    avatarInitials.textContent = getInitials(profile.name, profile.email);
-    avatarInitials.classList.remove("hidden");
-    avatarImage.classList.add("hidden");
-    avatarImage.removeAttribute("src");
-  }
-}
-
-function showMessage(message, type = "success") {
-  globalMessage.className =
-    "mb-6 rounded-2xl px-4 py-3 text-sm " +
-    (type === "error"
-      ? "bg-red-500/15 text-red-200"
-      : "bg-emerald-500/15 text-emerald-200");
-  globalMessage.textContent = message;
-  globalMessage.classList.remove("hidden");
 }
 
 function hideAllSections() {
@@ -214,44 +126,96 @@ function hideAllSections() {
   tnpSection.classList.add("hidden");
 }
 
-function fillForm(form, data = {}) {
-  Array.from(form.elements).forEach((element) => {
-    if (!element.name) {
-      return;
-    }
-
-    const value = data[element.name];
-    if (Array.isArray(value)) {
-      element.value = value.join(", ");
-    } else if (value != null) {
-      element.value = value;
-    }
-  });
-}
-
-function formatPercentage(value) {
-  if (value == null || Number.isNaN(Number(value))) {
-    return "--";
+function setButtonLoading(button, loadingText) {
+  if (!button) {
+    return () => {};
   }
 
-  return `${Math.round(Number(value))}%`;
+  const originalHtml = button.innerHTML;
+  button.disabled = true;
+  button.innerHTML = `<span class="inline-flex items-center gap-2"><span class="loading-spinner"></span><span>${loadingText}</span></span>`;
+
+  return () => {
+    button.disabled = false;
+    button.innerHTML = originalHtml;
+  };
 }
 
-function downloadCsv(filename, rows) {
-  const csv = rows
-    .map((row) =>
-      row
-        .map((value) => `"${String(value ?? "").replace(/"/g, '""')}"`)
-        .join(",")
-    )
-    .join("\n");
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = filename;
-  link.click();
-  URL.revokeObjectURL(url);
+function setContainerLoading(element, message = "Loading...") {
+  if (!element) {
+    return;
+  }
+
+  element.innerHTML = `
+    <div class="loading-pulse rounded-2xl border border-white/10 bg-slate-950/50 px-4 py-5">
+      <div class="flex items-center gap-3">
+        <span class="loading-spinner"></span>
+        <span>${message}</span>
+      </div>
+    </div>
+  `;
+}
+
+function buildEmptyState(title, description) {
+  return `
+    <div class="rounded-2xl border border-white/10 bg-slate-950/50 px-4 py-5">
+      <p class="font-semibold text-white">${title}</p>
+      <p class="mt-2 text-sm leading-6 text-slate-300">${description}</p>
+    </div>
+  `;
+}
+
+function average(values) {
+  const numericValues = values.map(Number).filter((value) => Number.isFinite(value));
+  if (!numericValues.length) {
+    return 0;
+  }
+  return numericValues.reduce((sum, value) => sum + value, 0) / numericValues.length;
+}
+
+function getStudentDepartment(student) {
+  return student.profile?.department || student.department || "Unassigned";
+}
+
+function getStudentYear(student) {
+  return String(student.profile?.graduationYear || "Unassigned");
+}
+
+function classifyCompanySector(company) {
+  const text = `${company.role || ""} ${company.name || ""}`.toLowerCase();
+  if (/(data|analyst|analytics|machine|ai|ml)/.test(text)) {
+    return "Data / AI";
+  }
+  if (/(software|developer|web|frontend|backend|full stack)/.test(text)) {
+    return "Software";
+  }
+  if (/(cloud|devops|security|network|infra)/.test(text)) {
+    return "Cloud / Infra";
+  }
+  if (/(sales|business|consult|product|marketing)/.test(text)) {
+    return "Business";
+  }
+  return "Other";
+}
+
+function validateScoreInputs(form) {
+  const ranges = [
+    ["aptitudeScore", "Aptitude Score", 0, 100],
+    ["softSkillsScore", "Soft Skills Score", 0, 100],
+    ["resumeScore", "Resume Score", 0, 100],
+  ];
+
+  for (const [name, label, min, max] of ranges) {
+    const element = form?.elements?.[name];
+    if (!element || element.value === "") {
+      continue;
+    }
+
+    const value = Number(element.value);
+    if (Number.isNaN(value) || value < min || value > max) {
+      throw new Error(`${label} must be between ${min} and ${max}.`);
+    }
+  }
 }
 
 function filterAndSortStudents(students) {
@@ -385,7 +349,10 @@ function renderStudentInsights(studentProfile = {}, prediction = null, resumeAna
 
 function renderPrediction(prediction) {
   if (!prediction) {
-    predictionResult.innerHTML = "Prediction results will appear here.";
+    predictionResult.innerHTML = buildEmptyState(
+      "Prediction pending",
+      "Save profile scores and run the prediction engine to see placement probability, confidence, and role fit."
+    );
     return;
   }
 
@@ -404,10 +371,28 @@ function renderPrediction(prediction) {
         <p class="mt-2 text-xl font-bold text-white">INR ${prediction.expectedSalaryLpa} LPA</p>
       </div>
     </div>
+    <div class="mt-4 grid gap-4 md:grid-cols-2">
+      <div class="rounded-2xl border border-slate-800 bg-slate-900 p-4">
+        <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Confidence Score</p>
+        <p class="mt-2 text-2xl font-black text-white">${prediction.confidenceScore || 0}%</p>
+        <p class="mt-2 text-sm text-slate-300">Strength of the model's current placement call.</p>
+      </div>
+      <div class="rounded-2xl border border-slate-800 bg-slate-900 p-4">
+        <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Role Confidence</p>
+        <p class="mt-2 text-2xl font-black text-white">${prediction.roleConfidence || 0}%</p>
+        <p class="mt-2 text-sm text-slate-300">Classifier confidence for the predicted role.</p>
+      </div>
+    </div>
     <div class="mt-4 rounded-2xl border border-slate-800 bg-slate-900 p-4">
       <p class="font-semibold text-white">Improvement Suggestions</p>
       <ul class="mt-3 space-y-2 text-slate-300">
         ${prediction.improvementSuggestions.map((item) => `<li>- ${item}</li>`).join("")}
+      </ul>
+    </div>
+    <div class="mt-4 rounded-2xl border border-slate-800 bg-slate-900 p-4">
+      <p class="font-semibold text-white">Explain Why</p>
+      <ul class="mt-3 space-y-2 text-slate-300">
+        ${(prediction.explainWhy || []).map((item) => `<li>- ${item}</li>`).join("") || "<li>- Add more academic and project signals for a richer explanation.</li>"}
       </ul>
     </div>
     <div class="mt-4 grid gap-4 md:grid-cols-2">
@@ -427,7 +412,10 @@ function renderPrediction(prediction) {
 
 function renderResumeAnalysis(analysis) {
   if (!analysis) {
-    resumeAnalysisResult.innerHTML = "Resume feedback will appear here.";
+    resumeAnalysisResult.innerHTML = buildEmptyState(
+      "Resume feedback pending",
+      "Upload and analyze a resume to see ATS score, extracted content, and improvement suggestions."
+    );
     return;
   }
 
@@ -463,7 +451,10 @@ function renderResumeAnalysis(analysis) {
 
 function renderCompanyMatches(matches) {
   if (!matches || matches.length === 0) {
-    studentCompanyMatches.innerHTML = "No company matches available yet.";
+    studentCompanyMatches.innerHTML = buildEmptyState(
+      "No company matches yet",
+      "Save your profile and generate a prediction first so the recommendation engine can score skill fit and eligibility."
+    );
     return;
   }
 
@@ -489,6 +480,12 @@ function renderCompanyMatches(matches) {
                 <div class="h-2 rounded-full bg-gradient-to-r from-cyan-400 via-sky-400 to-emerald-400" style="width:${Math.min(100, match.matchScore)}%"></div>
               </div>
               <p class="mt-3 text-sm leading-6 text-slate-300">${match.eligibilityReasons.join(", ")}</p>
+              <p class="mt-2 text-sm leading-6 text-slate-400">${match.recommendationReason || "Recommendation is based on current profile fit and eligibility."}</p>
+              ${
+                Number(match.historicalPlacements || 0) > 0
+                  ? `<p class="mt-2 text-xs uppercase tracking-[0.18em] text-slate-500">${match.historicalPlacements} prior placements from your institution</p>`
+                  : ""
+              }
             </article>
           `
         )
@@ -499,7 +496,10 @@ function renderCompanyMatches(matches) {
 
 function renderFacultyTable(students) {
   if (!students.length) {
-    facultyStudentTable.innerHTML = "No student records found.";
+    facultyStudentTable.innerHTML = buildEmptyState(
+      "No students found",
+      "Student records will appear here once learners register and save their profile data."
+    );
     return;
   }
 
@@ -574,6 +574,14 @@ function renderGroupingBoard(students) {
     return accumulator;
   }, {});
 
+  if (!Object.keys(grouped).length) {
+    tnpGroupingBoard.innerHTML = buildEmptyState(
+      "No role groups yet",
+      "Predicted-role grouping will appear here after students generate predictions."
+    );
+    return;
+  }
+
   tnpGroupingBoard.innerHTML = Object.entries(grouped)
     .map(
       ([role, group]) => `
@@ -593,6 +601,14 @@ function renderGroupingBoard(students) {
 }
 
 function renderCompanyList(companies) {
+  if (!companies.length) {
+    tnpCompanyList.innerHTML = buildEmptyState(
+      "No companies added",
+      "Add a company here to start matching students against eligibility rules."
+    );
+    return;
+  }
+
   tnpCompanyList.innerHTML = companies
     .map(
       (company) => `
@@ -600,7 +616,7 @@ function renderCompanyList(companies) {
           <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
               <p class="font-semibold text-white">${company.name}</p>
-              <p class="mt-1 text-sm text-slate-400">${company.role} • ${company.packageLpa} LPA</p>
+              <p class="mt-1 text-sm text-slate-400">${company.role} - ${company.packageLpa} LPA</p>
             </div>
             <div class="flex gap-2">
               <button class="rounded-xl border border-white/10 px-3 py-2 text-xs font-semibold text-white hover:bg-white/10" data-company-edit='${encodeURIComponent(JSON.stringify(company))}'>Edit</button>
@@ -634,11 +650,562 @@ function renderCompanyList(companies) {
   });
 }
 
+function buildWorkspaceItems(role) {
+  if (role === "student") {
+    return [
+      { label: "Dashboard", targetId: "studentOverviewPanel" },
+      { label: "Resume Analyzer", targetId: "resumeUploadForm" },
+      { label: "Applications", targetId: "studentCompanyPanel" },
+      { label: "Analytics", targetId: "studentPredictionPanel" },
+      { label: "Profile", targetId: "studentProfileForm" },
+    ];
+  }
+
+  if (role === "faculty") {
+    return [
+      { label: "Dashboard", targetId: "facultyOverviewPanel" },
+      { label: "Applications", targetId: "facultyStudentTable" },
+      { label: "Analytics", targetId: "facultyOverviewPanel" },
+      { label: "Profile", targetId: "facultyEditForm" },
+    ];
+  }
+
+  if (role === "tnp") {
+    return [
+      { label: "Dashboard", targetId: "tnpOverviewPanel" },
+      { label: "Applications", targetId: "tnpOutcomePanel" },
+      { label: "Analytics", targetId: "tnpAnalyticsPanel" },
+      { label: "Resume Analyzer", targetId: "tnpTrainingPanel" },
+      { label: "Profile", targetId: "tnpCompanyFormPanel" },
+    ];
+  }
+
+  return [];
+}
+
+function renderWorkspaceNav(role) {
+  if (!workspaceNav) {
+    return;
+  }
+
+  const items = buildWorkspaceItems(role);
+  if (breadcrumbRole) {
+    breadcrumbRole.textContent = role.toUpperCase();
+  }
+  if (breadcrumbCurrent) {
+    breadcrumbCurrent.textContent = items[0]?.label || "Dashboard";
+  }
+  workspaceNav.innerHTML = items
+    .map(
+      (item, index) => `
+        <button
+          type="button"
+          class="workspace-nav-item w-full rounded-2xl px-4 py-3 text-left transition ${
+            index === 0 ? "bg-cyan-400/10 text-cyan-200" : "bg-white/5 text-slate-300 hover:bg-white/10"
+          }"
+          data-target-id="${item.targetId}"
+        >
+          ${item.label}
+        </button>
+      `
+    )
+    .join("");
+
+  workspaceNav.querySelectorAll(".workspace-nav-item").forEach((button) => {
+    button.addEventListener("click", () => {
+      const target = document.getElementById(button.dataset.targetId);
+      if (!target) {
+        return;
+      }
+
+      workspaceNav.querySelectorAll(".workspace-nav-item").forEach((item) => {
+        item.classList.remove("bg-cyan-400/10", "text-cyan-200");
+        item.classList.add("bg-white/5", "text-slate-300");
+      });
+      button.classList.remove("bg-white/5", "text-slate-300");
+      button.classList.add("bg-cyan-400/10", "text-cyan-200");
+      if (breadcrumbCurrent) {
+        breadcrumbCurrent.textContent = button.textContent.trim();
+      }
+
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+}
+
+function renderOutcomeSummary(students) {
+  if (!tnpOutcomeSummary) {
+    return;
+  }
+
+  const labeledStudents = students.filter(
+    (student) => typeof student.profile?.placed === "boolean"
+  );
+  const placedStudents = labeledStudents.filter((student) => student.profile?.placed).length;
+  const notPlacedStudents = labeledStudents.filter(
+    (student) => student.profile?.placed === false
+  ).length;
+  const unlabeledStudents = Math.max(students.length - labeledStudents.length, 0);
+
+  tnpOutcomeSummary.innerHTML = `
+    <div class="rounded-2xl border border-white/10 bg-slate-950/50 px-4 py-4">
+      <div class="flex items-center justify-between">
+        <p class="text-sm font-semibold text-white">Labeled Outcomes</p>
+        <span class="text-sm text-slate-300">${labeledStudents.length}/${students.length}</span>
+      </div>
+      <p class="mt-2 text-sm text-slate-300">These students are ready to be exported into the local training CSV.</p>
+    </div>
+    <div class="grid gap-3 sm:grid-cols-3">
+      <div class="rounded-2xl border border-white/10 bg-slate-950/50 px-4 py-4">
+        <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Placed</p>
+        <p class="mt-2 text-2xl font-black text-white">${placedStudents}</p>
+      </div>
+      <div class="rounded-2xl border border-white/10 bg-slate-950/50 px-4 py-4">
+        <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Not Placed</p>
+        <p class="mt-2 text-2xl font-black text-white">${notPlacedStudents}</p>
+      </div>
+      <div class="rounded-2xl border border-white/10 bg-slate-950/50 px-4 py-4">
+        <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Need Label</p>
+        <p class="mt-2 text-2xl font-black text-white">${unlabeledStudents}</p>
+      </div>
+    </div>
+  `;
+}
+
+function renderOutcomeTable(students) {
+  if (!tnpOutcomeTable) {
+    return;
+  }
+
+  if (!students.length) {
+    tnpOutcomeTable.innerHTML = buildEmptyState(
+      "No student outcomes yet",
+      "Once students are available, you can mark them placed or not placed and use those outcomes for retraining."
+    );
+    return;
+  }
+
+  tnpOutcomeTable.innerHTML = `
+    <table class="min-w-full overflow-hidden rounded-2xl border border-slate-800">
+      <thead class="bg-slate-900">
+        <tr>
+          <th class="px-4 py-3 text-left">Student</th>
+          <th class="px-4 py-3 text-left">Predicted</th>
+          <th class="px-4 py-3 text-left">Outcome</th>
+          <th class="px-4 py-3 text-left">Company</th>
+          <th class="px-4 py-3 text-left">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${students
+          .map((student) => {
+            const placed = student.profile?.placed;
+            const outcomeLabel =
+              typeof placed === "boolean" ? (placed ? "Placed" : "Not Placed") : "Pending";
+            const outcomeClass =
+              typeof placed !== "boolean"
+                ? "bg-slate-500/15 text-slate-200"
+                : placed
+                  ? "bg-emerald-500/15 text-emerald-200"
+                  : "bg-red-500/15 text-red-200";
+
+            return `
+              <tr class="border-t border-slate-800">
+                <td class="px-4 py-3">
+                  <div class="font-semibold text-white">${student.name || "-"}</div>
+                  <div class="text-xs text-slate-400">${student.email || "-"}</div>
+                </td>
+                <td class="px-4 py-3">
+                  <div>${student.prediction?.predictedRole || "-"}</div>
+                  <div class="text-xs text-slate-400">${student.prediction?.placementProbability || 0}% probability</div>
+                </td>
+                <td class="px-4 py-3">
+                  <span class="rounded-full px-3 py-1 text-xs font-semibold ${outcomeClass}">${outcomeLabel}</span>
+                  <div class="mt-2 text-xs text-slate-400">${student.profile?.finalRole || "Final role pending"}</div>
+                </td>
+                <td class="px-4 py-3">
+                  <div>${student.profile?.placedCompany || "-"}</div>
+                  <div class="text-xs text-slate-400">${student.profile?.placementDate || "Date pending"}</div>
+                </td>
+                <td class="px-4 py-3">
+                  <button
+                    class="rounded-xl border border-white/10 px-3 py-2 text-xs font-semibold text-slate-200 hover:bg-white/10"
+                    data-tnp-student='${encodeURIComponent(JSON.stringify(student))}'
+                  >
+                    Manage
+                  </button>
+                </td>
+              </tr>
+            `;
+          })
+          .join("")}
+      </tbody>
+    </table>
+  `;
+
+  tnpOutcomeTable.querySelectorAll("button[data-tnp-student]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const student = JSON.parse(decodeURIComponent(button.dataset.tnpStudent));
+      selectedTnpStudentId = student.uid;
+      if (!tnpOutcomeForm) {
+        return;
+      }
+
+      tnpOutcomeForm.elements.studentId.value = student.uid;
+      fillForm(tnpOutcomeForm, {
+        placed:
+          typeof student.profile?.placed === "boolean"
+            ? String(student.profile.placed)
+            : "true",
+        placementDate: student.profile?.placementDate || "",
+        finalRole: student.profile?.finalRole || student.prediction?.predictedRole || "",
+        finalSalaryLpa:
+          student.profile?.finalSalaryLpa || student.prediction?.expectedSalaryLpa || "",
+        placedCompany: student.profile?.placedCompany || "",
+        finalOutcomeNotes: student.profile?.finalOutcomeNotes || "",
+      });
+      tnpSelectedStudent.textContent = `Updating placement outcome for ${student.name} (${student.email})`;
+    });
+  });
+}
+
+function updateTrainingStatus(content) {
+  if (tnpTrainingStatus) {
+    tnpTrainingStatus.innerHTML = content;
+  }
+}
+
+function populateTnpFilters(students) {
+  if (!tnpYearFilter || !tnpDepartmentFilter) {
+    return;
+  }
+
+  const selectedYear = tnpYearFilter.value || "all";
+  const selectedDepartment = tnpDepartmentFilter.value || "all";
+  const years = [...new Set(students.map(getStudentYear))].filter(Boolean).sort();
+  const departments = [...new Set(students.map(getStudentDepartment))].filter(Boolean).sort();
+
+  tnpYearFilter.innerHTML = [
+    `<option value="all">All years</option>`,
+    ...years.map((year) => `<option value="${year}">${year}</option>`),
+  ].join("");
+  tnpDepartmentFilter.innerHTML = [
+    `<option value="all">All departments</option>`,
+    ...departments.map((department) => `<option value="${department}">${department}</option>`),
+  ].join("");
+
+  tnpYearFilter.value = years.includes(selectedYear) ? selectedYear : "all";
+  tnpDepartmentFilter.value = departments.includes(selectedDepartment) ? selectedDepartment : "all";
+}
+
+function getFilteredTnpStudents() {
+  const selectedYear = tnpYearFilter?.value || "all";
+  const selectedDepartment = tnpDepartmentFilter?.value || "all";
+
+  return tnpStudentsCache.filter((student) => {
+    const matchesYear = selectedYear === "all" || getStudentYear(student) === selectedYear;
+    const matchesDepartment =
+      selectedDepartment === "all" || getStudentDepartment(student) === selectedDepartment;
+    return matchesYear && matchesDepartment;
+  });
+}
+
+function renderLineChart(container, points) {
+  if (!container) {
+    return;
+  }
+
+  if (!points.length) {
+    container.innerHTML = buildEmptyState("No trend data", "Add student outcomes to build a placement trend.");
+    return;
+  }
+
+  const maxValue = Math.max(...points.map((point) => point.value), 1);
+  const width = 320;
+  const height = 150;
+  const path = points
+    .map((point, index) => {
+      const x = points.length === 1 ? width / 2 : (index / (points.length - 1)) * width;
+      const y = height - (point.value / maxValue) * (height - 24) - 12;
+      return `${index === 0 ? "M" : "L"} ${x.toFixed(1)} ${y.toFixed(1)}`;
+    })
+    .join(" ");
+
+  container.innerHTML = `
+    <svg viewBox="0 0 ${width} ${height}" class="h-44 w-full overflow-visible" role="img" aria-label="Placement trend chart">
+      <path d="${path}" fill="none" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+      ${points
+        .map((point, index) => {
+          const x = points.length === 1 ? width / 2 : (index / (points.length - 1)) * width;
+          const y = height - (point.value / maxValue) * (height - 24) - 12;
+          return `<g><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5" fill="#f97316"></circle><text x="${x.toFixed(1)}" y="${height - 1}" text-anchor="middle" class="fill-slate-400 text-[10px]">${point.label}</text></g>`;
+        })
+        .join("")}
+    </svg>
+  `;
+}
+
+function renderBarChart(container, items) {
+  if (!container) {
+    return;
+  }
+
+  if (!items.length) {
+    container.innerHTML = buildEmptyState("No branch data", "Department-wise analytics appear after students save profiles.");
+    return;
+  }
+
+  const maxValue = Math.max(...items.map((item) => item.value), 1);
+  container.innerHTML = `
+    <div class="flex h-44 items-end gap-3">
+      ${items
+        .slice(0, 6)
+        .map(
+          (item) => `
+            <div class="flex flex-1 flex-col items-center gap-2">
+              <div class="flex h-32 w-full items-end rounded-xl bg-slate-900/70 px-2 py-2">
+                <div class="pm-chart-bar w-full rounded-lg bg-gradient-to-t from-blue-600 to-cyan-300" style="height:${Math.max(10, (item.value / maxValue) * 100)}%"></div>
+              </div>
+              <p class="line-clamp-1 text-center text-[11px] text-slate-400">${item.label}</p>
+              <p class="text-xs font-bold text-white">${Math.round(item.value)}%</p>
+            </div>
+          `
+        )
+        .join("")}
+    </div>
+  `;
+}
+
+function renderPieChart(container, items) {
+  if (!container) {
+    return;
+  }
+
+  if (!items.length) {
+    container.innerHTML = buildEmptyState("No company sectors", "Add companies to show sector distribution.");
+    return;
+  }
+
+  const colors = ["#2563eb", "#14b8a6", "#f97316", "#22c55e", "#6366f1"];
+  const total = items.reduce((sum, item) => sum + item.value, 0) || 1;
+  let cursor = 0;
+  const gradient = items
+    .map((item, index) => {
+      const start = cursor;
+      const end = cursor + (item.value / total) * 100;
+      cursor = end;
+      return `${colors[index % colors.length]} ${start}% ${end}%`;
+    })
+    .join(", ");
+
+  container.innerHTML = `
+    <div class="grid gap-4 sm:grid-cols-[150px_1fr] sm:items-center">
+      <div class="mx-auto h-36 w-36 rounded-full shadow-2xl shadow-black/20" style="background: conic-gradient(${gradient})"></div>
+      <div class="space-y-2">
+        ${items
+          .map(
+            (item, index) => `
+              <div class="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+                <span class="flex items-center gap-2 text-sm text-slate-300"><span class="h-2.5 w-2.5 rounded-full" style="background:${colors[index % colors.length]}"></span>${item.label}</span>
+                <span class="text-sm font-bold text-white">${item.value}</span>
+              </div>
+            `
+          )
+          .join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderTnpDerivedAnalytics(students, companies) {
+  const total = students.length;
+  const ready = students.filter((student) => Number(student.prediction?.placementProbability || 0) >= 70).length;
+  const placed = students.filter((student) => student.profile?.placed).length;
+  const notPlaced = students.filter((student) => student.profile?.placed === false).length;
+  const packageValues = students
+    .map((student) => Number(student.profile?.finalSalaryLpa || 0))
+    .filter(Boolean);
+  const averagePackage =
+    packageValues.length > 0
+      ? average(packageValues)
+      : average(companies.map((company) => Number(company.packageLpa || 0)).filter(Boolean));
+  const probabilities = students
+    .map((student) => Number(student.prediction?.placementProbability || 0))
+    .filter(Boolean);
+
+  document.getElementById("metricTotalStudents").textContent = total;
+  document.getElementById("metricReadyStudents").textContent = ready;
+  document.getElementById("metricAveragePlacement").textContent = `${Math.round(average(probabilities))}%`;
+  document.getElementById("metricTotalCompanies").textContent = companies.length;
+  if (metricAveragePackage) {
+    metricAveragePackage.textContent = `${averagePackage.toFixed(1)}L`;
+  }
+  document.getElementById("metricPlacedStudents").textContent = placed;
+  document.getElementById("metricNotPlacedStudents").textContent = notPlaced;
+
+  const byYear = students.reduce((accumulator, student) => {
+    const year = getStudentYear(student);
+    accumulator[year] = accumulator[year] || { label: year, value: 0 };
+    if (student.profile?.placed) {
+      accumulator[year].value += 1;
+    }
+    return accumulator;
+  }, {});
+  renderLineChart(placementTrendChart, Object.values(byYear).sort((a, b) => a.label.localeCompare(b.label)));
+
+  const byDepartment = students.reduce((accumulator, student) => {
+    const department = getStudentDepartment(student);
+    accumulator[department] = accumulator[department] || [];
+    accumulator[department].push(Number(student.prediction?.placementProbability || 0));
+    return accumulator;
+  }, {});
+  renderBarChart(
+    branchWiseChart,
+    Object.entries(byDepartment).map(([label, values]) => ({ label, value: average(values) }))
+  );
+
+  const bySector = companies.reduce((accumulator, company) => {
+    const sector = classifyCompanySector(company);
+    accumulator[sector] = (accumulator[sector] || 0) + 1;
+    return accumulator;
+  }, {});
+  renderPieChart(
+    sectorDistributionChart,
+    Object.entries(bySector).map(([label, value]) => ({ label, value }))
+  );
+}
+
+function renderRoleDistribution(students) {
+  const container = document.getElementById("roleDistribution");
+  if (!container) {
+    return;
+  }
+
+  const distribution = students.reduce((accumulator, student) => {
+    const role = student.prediction?.predictedRole || "Unassigned";
+    accumulator[role] = (accumulator[role] || 0) + 1;
+    return accumulator;
+  }, {});
+  const entries = Object.entries(distribution);
+  container.innerHTML =
+    entries.length > 0
+      ? entries
+          .map(
+            ([role, count]) => `
+              <div class="flex items-center justify-between rounded-2xl border border-slate-800 bg-slate-900 p-4">
+                <span>${role}</span>
+                <span class="font-bold text-white">${count}</span>
+              </div>
+            `
+          )
+          .join("")
+      : buildEmptyState("No role distribution yet", "Predicted roles will appear here after students generate predictions.");
+}
+
+function renderFilteredTnpViews() {
+  const filteredStudents = getFilteredTnpStudents();
+  renderTnpDerivedAnalytics(filteredStudents, tnpCompaniesCache);
+  renderRoleDistribution(filteredStudents);
+  renderGroupingBoard(filteredStudents);
+  renderOutcomeSummary(filteredStudents);
+  renderOutcomeTable(filteredStudents);
+}
+
+function renderModelPerformance(modelPerformance = {}, retrainingHistory = []) {
+  if (tnpModelPerformance) {
+    tnpModelPerformance.innerHTML = `
+      <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <div class="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
+          <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Labeled Outcomes</p>
+          <p class="mt-2 text-2xl font-black text-white">${modelPerformance.labeledOutcomes || 0}</p>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
+          <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Placement Accuracy</p>
+          <p class="mt-2 text-2xl font-black text-white">${modelPerformance.placementAccuracy || 0}%</p>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
+          <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Role Accuracy</p>
+          <p class="mt-2 text-2xl font-black text-white">${modelPerformance.roleAccuracy || 0}%</p>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
+          <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Salary MAE</p>
+          <p class="mt-2 text-2xl font-black text-white">${modelPerformance.salaryMae || 0}</p>
+        </div>
+      </div>
+    `;
+  }
+
+  if (tnpRetrainHistory) {
+    tnpRetrainHistory.innerHTML = retrainingHistory.length
+      ? retrainingHistory
+          .map(
+            (entry) => `
+              <div class="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
+                <div class="flex items-center justify-between gap-3">
+                  <p class="font-semibold text-white">${entry.type === "retrain" ? "Model Retrain" : "Training Event"}</p>
+                  <span class="text-xs text-slate-400">${entry.createdAt || ""}</span>
+                </div>
+                <p class="mt-2 text-sm text-slate-300">Rows exported: ${entry.rowsExported || 0} | Rows trained: ${entry.rowsTrained || 0}</p>
+                ${
+                  entry.metrics
+                    ? `<p class="mt-2 text-xs leading-5 text-slate-400">Placement train accuracy: ${entry.metrics.placementTrainAccuracy || 0}% | Role train accuracy: ${entry.metrics.roleTrainAccuracy || 0}% | Salary train MAE: ${entry.metrics.salaryTrainMae || 0}</p>`
+                    : ""
+                }
+              </div>
+            `
+          )
+          .join("")
+      : buildEmptyState(
+          "No retrain history yet",
+          "Run the retrain action once labeled outcomes are exported to build a local learning trail."
+        );
+  }
+
+  if (tnpPredictionActualTable) {
+    const comparisons = modelPerformance.predictionVsActual || [];
+    tnpPredictionActualTable.innerHTML = comparisons.length
+      ? `
+        <table class="min-w-full overflow-hidden rounded-2xl border border-slate-800">
+          <thead class="bg-slate-900">
+            <tr>
+              <th class="px-4 py-3 text-left">Student</th>
+              <th class="px-4 py-3 text-left">Predicted Role</th>
+              <th class="px-4 py-3 text-left">Actual Role</th>
+              <th class="px-4 py-3 text-left">Placement</th>
+              <th class="px-4 py-3 text-left">Salary</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${comparisons
+              .map(
+                (item) => `
+                  <tr class="border-t border-slate-800">
+                    <td class="px-4 py-3">${item.name}<div class="text-xs text-slate-400">${item.email}</div></td>
+                    <td class="px-4 py-3">${item.predictedRole}</td>
+                    <td class="px-4 py-3">${item.actualRole}</td>
+                    <td class="px-4 py-3">${item.actualPlacement ? "Placed" : "Not Placed"}<div class="text-xs text-slate-400">${item.placementProbability}% predicted</div></td>
+                    <td class="px-4 py-3">${item.expectedSalaryLpa || 0} / ${item.actualSalaryLpa || 0} LPA</td>
+                  </tr>
+                `
+              )
+              .join("")}
+          </tbody>
+        </table>
+      `
+      : buildEmptyState(
+          "No comparisons available yet",
+          "Mark final outcomes for students to compare predicted roles and salaries against actual results."
+        );
+  }
+}
+
 function renderAnalytics(overview) {
   document.getElementById("metricTotalStudents").textContent = overview.totalStudents;
   document.getElementById("metricReadyStudents").textContent = overview.readyForPlacement;
   document.getElementById("metricAveragePlacement").textContent = `${overview.averagePlacementProbability}%`;
   document.getElementById("metricTotalCompanies").textContent = overview.totalCompanies;
+  document.getElementById("metricPlacedStudents").textContent = overview.placedStudents || 0;
+  document.getElementById("metricNotPlacedStudents").textContent = overview.notPlacedStudents || 0;
 
   const distribution = Object.entries(overview.roleDistribution || {});
   document.getElementById("roleDistribution").innerHTML =
@@ -699,6 +1266,8 @@ function renderAnalytics(overview) {
       )
       .join("");
   }
+
+  renderModelPerformance(overview.modelPerformance, overview.retrainingHistory || []);
 }
 
 function renderCompanyBoard(board) {
@@ -734,68 +1303,31 @@ function renderCompanyBoard(board) {
   `;
 }
 
-async function updateProfileSettings() {
-  const name = settingsNameInput.value.trim();
-  const department = settingsDepartmentInput.value.trim();
-
-  const response = await apiRequest("/auth/me", {
-    method: "PATCH",
-    body: JSON.stringify({ name, department }),
-  });
-
-  if (auth?.currentUser) {
-    await updateProfile(auth.currentUser, { displayName: name });
-  }
-
-  currentProfile = response.profile;
-  topBarName.textContent = currentProfile.name;
-  topBarEmail.textContent = currentProfile.email;
-  settingsNameInput.value = currentProfile.name || "";
-  settingsDepartmentInput.value = currentProfile.department || "";
-  renderAvatar(currentProfile);
-  showMessage("Profile settings updated.");
-}
-
-async function updatePasswordSetting() {
-  const password = settingsPasswordInput.value.trim();
-  if (password.length < 6) {
-    throw new Error("Password must be at least 6 characters.");
-  }
-
-  if (!auth?.currentUser) {
-    throw new Error("No logged-in user found.");
-  }
-
-  await updatePassword(auth.currentUser, password);
-  settingsPasswordInput.value = "";
-  showMessage("Password updated successfully.");
-}
-
-function handleAvatarUpload(file) {
+async function handleAvatarUpload(file) {
   if (!file || !currentProfile) {
     return;
   }
 
-  if (!file.type.startsWith("image/")) {
-    showMessage("Please choose an image file.", "error");
-    return;
-  }
-
-  if (file.size > 2 * 1024 * 1024) {
-    showMessage("Profile photo size limit is 2 MB.", "error");
-    return;
-  }
-
-  const reader = new FileReader();
-  reader.onload = () => {
-    localStorage.setItem(getAvatarStorageKey(currentProfile.uid), reader.result);
-    renderAvatar(currentProfile);
+  try {
+    await storeAvatarFromFile(currentProfile, file);
+    renderAvatar(currentProfile, avatarImage, avatarInitials);
     showMessage("Profile photo updated.");
-  };
-  reader.readAsDataURL(file);
+  } catch (error) {
+    showMessage(error.message, "error");
+  }
 }
 
 async function loadStudentData() {
+  setContainerLoading(predictionResult, "Loading your latest prediction...");
+  setContainerLoading(resumeAnalysisResult, "Loading resume insights...");
+  setContainerLoading(studentCompanyMatches, "Loading company recommendations...");
+  if (studentReadinessChart) {
+    setContainerLoading(studentReadinessChart, "Refreshing readiness metrics...");
+  }
+  if (studentTimeline) {
+    setContainerLoading(studentTimeline, "Preparing your action timeline...");
+  }
+
   const [dashboard, matches] = await Promise.all([
     apiRequest("/students/me"),
     apiRequest("/companies/matches"),
@@ -814,12 +1346,24 @@ async function loadStudentData() {
 }
 
 async function loadFacultyData() {
+  setContainerLoading(facultyStudentTable, "Loading student records...");
   const response = await apiRequest("/students");
   facultyStudentsCache = response.students;
   renderFacultyTable(filterAndSortStudents(response.students));
 }
 
 async function loadTnpData() {
+  setContainerLoading(tnpFunnel, "Loading placement analytics...");
+  setContainerLoading(tnpGroupingBoard, "Grouping students by predicted role...");
+  setContainerLoading(tnpCompanyList, "Loading company records...");
+  setContainerLoading(tnpOutcomeTable, "Loading labeled student outcomes...");
+  setContainerLoading(tnpModelPerformance, "Computing model performance...");
+  setContainerLoading(tnpRetrainHistory, "Loading retrain history...");
+  setContainerLoading(tnpPredictionActualTable, "Loading prediction comparisons...");
+  if (tnpOutcomeSummary) {
+    setContainerLoading(tnpOutcomeSummary, "Checking training readiness...");
+  }
+
   const [overview, board, students, companies] = await Promise.all([
     apiRequest("/analytics/overview"),
     apiRequest("/companies/board"),
@@ -830,13 +1374,19 @@ async function loadTnpData() {
   tnpCompaniesCache = companies.companies;
   renderAnalytics(overview.overview);
   renderCompanyBoard(board.board);
-  renderGroupingBoard(tnpStudentsCache);
+  populateTnpFilters(tnpStudentsCache);
   renderCompanyList(tnpCompaniesCache);
+  renderFilteredTnpViews();
 }
 
 studentProfileForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
+  const stopLoading = setButtonLoading(
+    studentProfileForm.querySelector("button[type='submit']"),
+    "Saving profile..."
+  );
   try {
+    validateScoreInputs(studentProfileForm);
     const payload = Object.fromEntries(new FormData(studentProfileForm).entries());
     await apiRequest("/students/me", {
       method: "PUT",
@@ -846,16 +1396,67 @@ studentProfileForm?.addEventListener("submit", async (event) => {
     await loadStudentData();
   } catch (error) {
     showMessage(error.message, "error");
+  } finally {
+    stopLoading();
   }
+});
+
+function updateResumeFileUi(file) {
+  if (resumeFileName) {
+    resumeFileName.textContent = file
+      ? `${file.name} selected`
+      : "or click to choose a PDF/DOCX file";
+  }
+  if (resumeUploadProgress) {
+    resumeUploadProgress.style.width = file ? "18%" : "0%";
+  }
+}
+
+resumeFileInput?.addEventListener("change", () => {
+  updateResumeFileUi(resumeFileInput.files?.[0]);
+});
+
+["dragenter", "dragover"].forEach((eventName) => {
+  resumeDropzone?.addEventListener(eventName, (event) => {
+    event.preventDefault();
+    resumeDropzone.classList.add("is-dragging");
+  });
+});
+
+["dragleave", "drop"].forEach((eventName) => {
+  resumeDropzone?.addEventListener(eventName, (event) => {
+    event.preventDefault();
+    resumeDropzone.classList.remove("is-dragging");
+  });
+});
+
+resumeDropzone?.addEventListener("drop", (event) => {
+  const file = event.dataTransfer?.files?.[0];
+  if (!file || !resumeFileInput) {
+    return;
+  }
+
+  const transfer = new DataTransfer();
+  transfer.items.add(file);
+  resumeFileInput.files = transfer.files;
+  updateResumeFileUi(file);
 });
 
 resumeUploadForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
+  const stopLoading = setButtonLoading(
+    resumeUploadForm.querySelector("button[type='submit']"),
+    "Analyzing resume..."
+  );
   try {
     if (!resumeFileInput.files.length) {
       throw new Error("Choose a PDF or DOCX resume first.");
     }
 
+    setContainerLoading(resumeAnalysisResult, "Analyzing resume content and ATS signals...");
+    if (resumeUploadProgress) {
+      resumeUploadProgress.style.width = "55%";
+    }
     const formData = new FormData();
     formData.append("resume", resumeFileInput.files[0]);
 
@@ -865,15 +1466,23 @@ resumeUploadForm?.addEventListener("submit", async (event) => {
     });
 
     renderResumeAnalysis(response.analysis);
+    if (resumeUploadProgress) {
+      resumeUploadProgress.style.width = "100%";
+    }
     showMessage("Resume analyzed successfully.");
     await loadStudentData();
   } catch (error) {
     showMessage(error.message, "error");
+  } finally {
+    stopLoading();
   }
 });
 
 predictionButton?.addEventListener("click", async () => {
+  const stopLoading = setButtonLoading(predictionButton, "Predicting...");
   try {
+    validateScoreInputs(studentProfileForm);
+    setContainerLoading(predictionResult, "Generating placement forecast...");
     const response = await apiRequest("/predictions", {
       method: "POST",
       body: JSON.stringify({}),
@@ -883,12 +1492,19 @@ predictionButton?.addEventListener("click", async () => {
     await loadStudentData();
   } catch (error) {
     showMessage(error.message, "error");
+  } finally {
+    stopLoading();
   }
 });
 
 facultyEditForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
+  const stopLoading = setButtonLoading(
+    facultyEditForm.querySelector("button[type='submit']"),
+    "Updating student..."
+  );
   try {
+    validateScoreInputs(facultyEditForm);
     const payload = Object.fromEntries(new FormData(facultyEditForm).entries());
     const studentId = payload.studentId || selectedStudentId;
     if (!studentId) {
@@ -904,15 +1520,20 @@ facultyEditForm?.addEventListener("submit", async (event) => {
     await loadFacultyData();
   } catch (error) {
     showMessage(error.message, "error");
+  } finally {
+    stopLoading();
   }
 });
 
 refreshFacultyData?.addEventListener("click", async () => {
+  const stopLoading = setButtonLoading(refreshFacultyData, "Refreshing...");
   try {
     await loadFacultyData();
     showMessage("Faculty dashboard refreshed.");
   } catch (error) {
     showMessage(error.message, "error");
+  } finally {
+    stopLoading();
   }
 });
 
@@ -926,6 +1547,14 @@ facultyStatusFilter?.addEventListener("change", () => {
 
 facultySortSelect?.addEventListener("change", () => {
   renderFacultyTable(filterAndSortStudents(facultyStudentsCache));
+});
+
+tnpYearFilter?.addEventListener("change", () => {
+  renderFilteredTnpViews();
+});
+
+tnpDepartmentFilter?.addEventListener("change", () => {
+  renderFilteredTnpViews();
 });
 
 facultyExportButton?.addEventListener("click", () => {
@@ -946,6 +1575,10 @@ facultyExportButton?.addEventListener("click", () => {
 
 companyForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
+  const stopLoading = setButtonLoading(
+    companyForm.querySelector("button[type='submit']"),
+    "Saving company..."
+  );
   try {
     const payload = Object.fromEntries(new FormData(companyForm).entries());
     const companyId = payload.companyId;
@@ -962,6 +1595,41 @@ companyForm?.addEventListener("submit", async (event) => {
     await loadTnpData();
   } catch (error) {
     showMessage(error.message, "error");
+  } finally {
+    stopLoading();
+  }
+});
+
+tnpOutcomeForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const stopLoading = setButtonLoading(
+    tnpOutcomeForm.querySelector("button[type='submit']"),
+    "Saving outcome..."
+  );
+  try {
+    const payload = Object.fromEntries(new FormData(tnpOutcomeForm).entries());
+    const studentId = payload.studentId || selectedTnpStudentId;
+    if (!studentId) {
+      throw new Error("Select a student outcome to update first.");
+    }
+
+    delete payload.studentId;
+    await apiRequest(`/students/${studentId}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+    showMessage("Student placement outcome saved.");
+    updateTrainingStatus(`
+      <div class="space-y-2">
+        <p class="font-semibold text-white">Latest update saved</p>
+        <p class="text-sm text-slate-300">The student outcome is stored in Firestore and will be included the next time you export training data.</p>
+      </div>
+    `);
+    await loadTnpData();
+  } catch (error) {
+    showMessage(error.message, "error");
+  } finally {
+    stopLoading();
   }
 });
 
@@ -983,6 +1651,76 @@ tnpExportStudentsButton?.addEventListener("click", () => {
   downloadCsv("tnp-students.csv", rows);
 });
 
+tnpExportTrainingButton?.addEventListener("click", async () => {
+  const stopLoading = setButtonLoading(tnpExportTrainingButton, "Exporting...");
+  try {
+    updateTrainingStatus(`
+      <div class="space-y-2">
+        <p class="font-semibold text-white">Preparing training export</p>
+        <p class="text-sm text-slate-300">Collecting labeled Firestore outcomes and building a CSV for retraining.</p>
+      </div>
+    `);
+    const response = await apiRequest("/analytics/export-training-data", {
+      method: "POST",
+      body: JSON.stringify({}),
+    });
+    updateTrainingStatus(`
+      <div class="space-y-2">
+        <p class="font-semibold text-white">Training CSV exported</p>
+        <p class="text-sm text-slate-300">Reviewed ${response.studentsReviewed} students and exported ${response.rowsExported} labeled rows.</p>
+        <p class="text-xs text-slate-400">${response.exportPath}</p>
+      </div>
+    `);
+    showMessage("Training data exported successfully.");
+  } catch (error) {
+    showMessage(error.message, "error");
+    updateTrainingStatus(`
+      <div class="space-y-2">
+        <p class="font-semibold text-white">Training export failed</p>
+        <p class="text-sm text-slate-300">${error.message}</p>
+      </div>
+    `);
+  } finally {
+    stopLoading();
+  }
+});
+
+tnpRetrainButton?.addEventListener("click", async () => {
+  const stopLoading = setButtonLoading(tnpRetrainButton, "Retraining...");
+  try {
+    updateTrainingStatus(`
+      <div class="space-y-2">
+        <p class="font-semibold text-white">Retraining in progress</p>
+        <p class="text-sm text-slate-300">Exporting Firestore outcomes and running the Python training pipeline.</p>
+      </div>
+    `);
+    const response = await apiRequest("/analytics/retrain", {
+      method: "POST",
+      body: JSON.stringify({}),
+    });
+    updateTrainingStatus(`
+      <div class="space-y-2">
+        <p class="font-semibold text-white">Retraining complete</p>
+        <p class="text-sm text-slate-300">Exported ${response.export.rowsExported} labeled rows and trained on ${response.training.rows_trained} total rows.</p>
+        <p class="text-xs text-slate-400">${(response.training.artifacts || []).join("<br />")}</p>
+        <p class="text-xs text-slate-400">Placement accuracy: ${response.training.metrics?.placementTrainAccuracy || 0}% | Role accuracy: ${response.training.metrics?.roleTrainAccuracy || 0}% | Salary MAE: ${response.training.metrics?.salaryTrainMae || 0}</p>
+      </div>
+    `);
+    showMessage("Models retrained successfully.");
+    await loadTnpData();
+  } catch (error) {
+    showMessage(error.message, "error");
+    updateTrainingStatus(`
+      <div class="space-y-2">
+        <p class="font-semibold text-white">Retraining failed</p>
+        <p class="text-sm text-slate-300">${error.message}</p>
+      </div>
+    `);
+  } finally {
+    stopLoading();
+  }
+});
+
 logoutButton.addEventListener("click", async () => {
   if (auth) {
     await signOut(auth);
@@ -990,43 +1728,8 @@ logoutButton.addEventListener("click", async () => {
   window.location.href = "/login";
 });
 
-settingsButton?.addEventListener("click", openSettingsPanel);
-closeSettingsButton?.addEventListener("click", closeSettingsPanel);
-
-themeOptions.forEach((button) => {
-  button.addEventListener("click", () => {
-    const settings = {
-      theme: button.dataset.theme,
-      compactMode: compactModeToggle.checked,
-    };
-    saveSettings(settings);
-    applyTheme(settings.theme);
-  });
-});
-
-compactModeToggle?.addEventListener("change", () => {
-  const settings = {
-    theme: readSettings().theme || "dark",
-    compactMode: compactModeToggle.checked,
-  };
-  saveSettings(settings);
-  applyCompactMode(settings.compactMode);
-});
-
-saveProfileSettingsButton?.addEventListener("click", async () => {
-  try {
-    await updateProfileSettings();
-  } catch (error) {
-    showMessage(error.message, "error");
-  }
-});
-
-changePasswordButton?.addEventListener("click", async () => {
-  try {
-    await updatePasswordSetting();
-  } catch (error) {
-    showMessage(error.message, "error");
-  }
+settingsButton?.addEventListener("click", () => {
+  window.location.href = "/settings";
 });
 
 avatarInput?.addEventListener("change", (event) => {
@@ -1057,9 +1760,8 @@ if (!auth) {
       topBarName.textContent = profile.name;
       topBarEmail.textContent = profile.email;
       roleBadge.textContent = profile.role.toUpperCase();
-      settingsNameInput.value = profile.name || "";
-      settingsDepartmentInput.value = profile.department || "";
-      renderAvatar(profile);
+      renderWorkspaceNav(profile.role);
+      renderAvatar(profile, avatarImage, avatarInitials);
 
       hideAllSections();
 

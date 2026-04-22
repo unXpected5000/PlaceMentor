@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Placement Mentor | Settings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        --theme-text: #f8fafc;
+        --theme-text-soft: #cbd5e1;
+        --theme-border: rgba(59, 130, 246, 0.2);
+        --theme-card: rgba(15, 23, 42, 0.76);
+        --theme-panel: rgba(15, 23, 42, 0.9);
+        --theme-surface: rgba(2, 6, 23, 0.82);
+      }
+
+      body[data-theme="light"] {
+        --theme-text: #0f172a;
+        --theme-text-soft: #475569;
+        --theme-border: rgba(37, 99, 235, 0.18);
+        --theme-card: rgba(255, 255, 255, 0.92);
+        --theme-panel: rgba(255, 255, 255, 0.96);
+        --theme-surface: rgba(248, 250, 252, 0.98);
+      }
+
+      body[data-theme="gray"] {
+        --theme-text: #f8fafc;
+        --theme-text-soft: #cbd5e1;
+        --theme-border: rgba(148, 163, 184, 0.24);
+        --theme-card: rgba(31, 41, 55, 0.88);
+        --theme-panel: rgba(31, 41, 55, 0.96);
+        --theme-surface: rgba(17, 24, 39, 0.92);
+      }
+
+      .settings-card {
+        background: var(--theme-card);
+        border-color: var(--theme-border);
+      }
+
+      .settings-panel {
+        background: var(--theme-panel);
+        border-color: var(--theme-border);
+      }
+
+      .settings-input {
+        background: var(--theme-surface);
+        border-color: var(--theme-border);
+        color: var(--theme-text);
+      }
+
+      .theme-segment {
+        background: color-mix(in srgb, var(--theme-panel) 70%, transparent);
+        border: 1px solid var(--theme-border);
+      }
+
+      .settings-theme {
+        border: 1px solid transparent;
+        color: var(--theme-text-soft);
+      }
+
+      .settings-theme.is-active {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.16), rgba(249, 115, 22, 0.12));
+        border-color: rgba(37, 99, 235, 0.35);
+        color: var(--theme-text);
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+      }
+
+      body[data-theme="light"] .text-white,
+      body[data-theme="light"] .text-slate-100,
+      body[data-theme="light"] .text-slate-200 {
+        color: var(--theme-text) !important;
+      }
+
+      body[data-theme="light"] .text-slate-300,
+      body[data-theme="light"] .text-slate-400 {
+        color: var(--theme-text-soft) !important;
+      }
+
+      body[data-theme="light"] .bg-white\/5,
+      body[data-theme="light"] .bg-cyan-500\/15,
+      body[data-theme="light"] .bg-orange-500\/15 {
+        background: rgba(37, 99, 235, 0.08) !important;
+      }
+
+      body[data-theme="light"] .border-white\/10 {
+        border-color: var(--theme-border) !important;
+      }
+
+      body[data-theme="light"] .hover\:bg-white\/10:hover {
+        background: rgba(37, 99, 235, 0.1) !important;
+      }
+    </style>
+  </head>
+  <body data-theme="dark" class="min-h-screen bg-slate-950 text-slate-100">
+    <div id="settingsBackdrop" class="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(14,165,233,0.18),_transparent_28%),radial-gradient(circle_at_top_right,_rgba(249,115,22,0.14),_transparent_30%),linear-gradient(180deg,_#020617_0%,_#0f172a_58%,_#020617_100%)]"></div>
+
+    <div class="mx-auto max-w-6xl px-4 py-6 lg:px-6">
+      <header class="settings-panel rounded-[2rem] border px-5 py-5 shadow-2xl shadow-black/25">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p class="text-xs uppercase tracking-[0.34em] text-orange-300">Placement Mentor Settings</p>
+            <h1 class="mt-2 text-3xl font-black">Account, Theme, and Personalization</h1>
+            <p class="mt-2 text-sm text-slate-300">Make visible changes here, then head back to the dashboard.</p>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <a href="/dashboard" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10">Back to Dashboard</a>
+            <button id="settingsLogoutButton" class="rounded-2xl bg-red-500/90 px-4 py-3 text-sm font-semibold text-white transition hover:bg-red-400">Logout</button>
+          </div>
+        </div>
+      </header>
+
+      <div id="settingsMessage" class="mt-4 hidden rounded-2xl px-4 py-3 text-sm"></div>
+
+      <div class="mt-6 grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
+        <section class="settings-card rounded-[2rem] border p-6 shadow-xl shadow-black/15">
+          <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Profile</p>
+          <div class="mt-5 flex flex-col gap-5 sm:flex-row sm:items-center">
+            <div class="relative">
+              <label for="settingsAvatarInput" class="group flex h-28 w-28 cursor-pointer items-center justify-center overflow-hidden rounded-[2rem] bg-cyan-500/15 text-3xl font-black text-cyan-100">
+                <img id="settingsAvatarImage" alt="Profile" class="hidden h-full w-full object-cover" />
+                <span id="settingsAvatarInitials">--</span>
+                <span class="absolute inset-x-0 bottom-0 bg-black/55 px-3 py-2 text-[10px] font-medium uppercase tracking-[0.24em] text-white opacity-0 transition group-hover:opacity-100">Change</span>
+              </label>
+              <input id="settingsAvatarInput" type="file" accept="image/*" class="hidden" />
+            </div>
+            <div class="space-y-2">
+              <p id="settingsRoleBadge" class="inline-flex rounded-full bg-orange-500/15 px-3 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-orange-200">Role</p>
+              <h2 id="settingsDisplayName" class="text-2xl font-bold">Loading...</h2>
+              <p id="settingsEmailText" class="text-sm text-slate-300">Loading...</p>
+              <button id="removeAvatarButton" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:bg-white/10">Remove Photo</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="settings-card rounded-[2rem] border p-6 shadow-xl shadow-black/15">
+          <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Theme</p>
+          <h2 class="mt-2 text-2xl font-bold">Theme Switch</h2>
+          <p class="mt-2 text-sm text-slate-300">Pick a clear dashboard mode. This change persists across the app.</p>
+          <div class="theme-segment mt-5 grid gap-2 rounded-[1.5rem] p-2 sm:grid-cols-3">
+            <button data-theme="dark" class="settings-theme rounded-[1.1rem] px-4 py-4 text-left transition">
+              <p class="text-sm font-semibold">Dark</p>
+              <p class="mt-1 text-xs">High contrast</p>
+            </button>
+            <button data-theme="light" class="settings-theme rounded-[1.1rem] px-4 py-4 text-left transition">
+              <p class="text-sm font-semibold">Light</p>
+              <p class="mt-1 text-xs">Clean and bright</p>
+            </button>
+            <button data-theme="gray" class="settings-theme rounded-[1.1rem] px-4 py-4 text-left transition">
+              <p class="text-sm font-semibold">Gray</p>
+              <p class="mt-1 text-xs">Muted neutral</p>
+            </button>
+          </div>
+        </section>
+
+        <section class="settings-card rounded-[2rem] border p-6 shadow-xl shadow-black/15">
+          <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Basic Info</p>
+          <h2 class="mt-2 text-2xl font-bold">Profile Details</h2>
+          <div class="mt-5 grid gap-4">
+            <label class="text-sm text-slate-300">
+              <span class="mb-2 block">Display Name</span>
+              <input id="settingsNameInput" type="text" class="settings-input w-full rounded-2xl border px-4 py-3" placeholder="Enter your display name" />
+            </label>
+            <label class="text-sm text-slate-300">
+              <span class="mb-2 block">Department</span>
+              <input id="settingsDepartmentInput" type="text" class="settings-input w-full rounded-2xl border px-4 py-3" placeholder="Enter your department" />
+            </label>
+            <button id="saveProfileSettingsButton" class="rounded-2xl bg-cyan-500 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-400">Save Changes</button>
+          </div>
+        </section>
+
+        <section class="settings-card rounded-[2rem] border p-6 shadow-xl shadow-black/15">
+          <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Security</p>
+          <h2 class="mt-2 text-2xl font-bold">Password Update</h2>
+          <div class="mt-5 grid gap-4">
+            <label class="text-sm text-slate-300">
+              <span class="mb-2 block">New Password</span>
+              <input id="settingsPasswordInput" type="password" class="settings-input w-full rounded-2xl border px-4 py-3" placeholder="Minimum 6 characters" />
+            </label>
+            <button id="changePasswordButton" class="rounded-2xl bg-orange-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-orange-400">Change Password</button>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="/app-config.js"></script>
+    <script type="module" src="/js/settings.js"></script>
+  </body>
+</html>
