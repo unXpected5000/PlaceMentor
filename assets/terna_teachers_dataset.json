@@ -1,0 +1,162 @@
+[
+  {
+    "id": 1,
+    "name": "Poonam Naik",
+    "email": "poonam.naik@terna.edu",
+    "department": "mechanical",
+    "role": "hod",
+    "subjects": [
+      "Thermodynamics"
+    ],
+    "experienceYears": 3,
+    "rating": 4.1,
+    "phone": "9317749028"
+  },
+  {
+    "id": 2,
+    "name": "Neelam Kulkarni",
+    "email": "neelam.kulkarni@terna.edu",
+    "department": "aids",
+    "role": "hod",
+    "subjects": [
+      "Data Science",
+      "Python"
+    ],
+    "experienceYears": 3,
+    "rating": 4.1,
+    "phone": "9543539033"
+  },
+  {
+    "id": 3,
+    "name": "Rekha Singh",
+    "email": "rekha.singh@terna.edu",
+    "department": "civil",
+    "role": "hod",
+    "subjects": [
+      "Structural Analysis"
+    ],
+    "experienceYears": 15,
+    "rating": 3.8,
+    "phone": "9671972312"
+  },
+  {
+    "id": 4,
+    "name": "Poonam Singh",
+    "email": "poonam.singh@terna.edu",
+    "department": "it",
+    "role": "hod",
+    "subjects": [
+      "Cloud Computing"
+    ],
+    "experienceYears": 4,
+    "rating": 4.2,
+    "phone": "9935465706"
+  },
+  {
+    "id": 5,
+    "name": "Vijay Singh",
+    "email": "vijay.singh@terna.edu",
+    "department": "mechanical",
+    "role": "teacher",
+    "subjects": [
+      "CAD",
+      "Fluid Mechanics"
+    ],
+    "experienceYears": 16,
+    "rating": 4.9,
+    "phone": "9276149534"
+  },
+  {
+    "id": 6,
+    "name": "Sunita Malhotra",
+    "email": "sunita.malhotra@terna.edu",
+    "department": "mechanical",
+    "role": "teacher",
+    "subjects": [
+      "Fluid Mechanics"
+    ],
+    "experienceYears": 10,
+    "rating": 3.7,
+    "phone": "9246533430"
+  },
+  {
+    "id": 7,
+    "name": "Rekha Bose",
+    "email": "rekha.bose@terna.edu",
+    "department": "it",
+    "role": "teacher",
+    "subjects": [
+      "Networking"
+    ],
+    "experienceYears": 3,
+    "rating": 4.7,
+    "phone": "9141402583"
+  },
+  {
+    "id": 8,
+    "name": "Rajesh Naik",
+    "email": "rajesh.naik@terna.edu",
+    "department": "mechatronics",
+    "role": "teacher",
+    "subjects": [
+      "Robotics"
+    ],
+    "experienceYears": 12,
+    "rating": 3.9,
+    "phone": "9260296393"
+  },
+  {
+    "id": 9,
+    "name": "Rajesh Malhotra",
+    "email": "rajesh.malhotra@terna.edu",
+    "department": "it",
+    "role": "hod",
+    "subjects": [
+      "Networking",
+      "Web Development"
+    ],
+    "experienceYears": 2,
+    "rating": 4.9,
+    "phone": "9267297592"
+  },
+  {
+    "id": 10,
+    "name": "Prakash Naik",
+    "email": "prakash.naik@terna.edu",
+    "department": "aids",
+    "role": "teacher",
+    "subjects": [
+      "Python",
+      "AI"
+    ],
+    "experienceYears": 14,
+    "rating": 4.6,
+    "phone": "9773856222"
+  },
+  {
+    "id": 11,
+    "name": "Seema Malhotra",
+    "email": "seema.malhotra@terna.edu",
+    "department": "mechanical",
+    "role": "teacher",
+    "subjects": [
+      "Thermodynamics"
+    ],
+    "experienceYears": 19,
+    "rating": 4.2,
+    "phone": "9878047715"
+  },
+  {
+    "id": 12,
+    "name": "Meena Bose",
+    "email": "meena.bose@terna.edu",
+    "department": "it",
+    "role": "teacher",
+    "subjects": [
+      "Cloud Computing"
+    ],
+    "experienceYears": 20,
+    "rating": 4.4,
+    "phone": "9860537456"
+  }
+]

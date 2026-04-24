@@ -1,0 +1,9 @@
+{
+  "name": "placementor-cloudflare",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:pages": "node scripts/build-pages.js"
+  }
+}

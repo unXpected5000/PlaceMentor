@@ -1,0 +1,12 @@
+name = "placementor"
+compatibility_date = "2026-04-22"
+pages_build_output_dir = "dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "placementor-db"
+database_id = "3faccd1a-b0e3-4f83-af8d-7b4ba9563576"
+
+[[r2_buckets]]
+binding = "PROFILE_IMAGES"
+bucket_name = "placementor-profile-images"

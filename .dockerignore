@@ -10,4 +10,5 @@ ml/artifacts/*.joblib
 ml/artifacts/training_history.json
 ml/data/firestore_students.csv
 configValues.txt
+cloudrun.env
 *.log

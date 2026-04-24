@@ -10,6 +10,8 @@ ml/src/__pycache__/
 *.pyc
 frontend/js/config.local.js
 configValues.txt
+cloudrun.env
+dist/
 .DS_Store
 Thumbs.db
 *.log

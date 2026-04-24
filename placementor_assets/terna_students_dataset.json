@@ -1,0 +1,1780 @@
+[
+  {
+    "id": 1,
+    "name": "Ira Patankar",
+    "email": "ira.patankar@terna.edu",
+    "department": "it",
+    "cgpa": 8.92,
+    "resumeScore": 85,
+    "skills": [
+      "Blockchain",
+      "Go",
+      "Vue.js"
+    ],
+    "phone": "9263779415",
+    "year": 4,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 2,
+    "name": "Meera Jadhav",
+    "email": "meera.jadhav@terna.edu",
+    "department": "it",
+    "cgpa": 8.75,
+    "resumeScore": 76,
+    "skills": [
+      "React",
+      "Spring Boot",
+      "Java"
+    ],
+    "phone": "9868642913",
+    "year": 2,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 3,
+    "name": "Tanvi Naik",
+    "email": "tanvi.naik@terna.edu",
+    "department": "extc",
+    "cgpa": 6.77,
+    "resumeScore": 72,
+    "skills": [
+      "NLP",
+      "Networking",
+      "Computer Vision",
+      "Go",
+      "MATLAB"
+    ],
+    "phone": "9574422618",
+    "year": 4,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 4,
+    "name": "Aditi Naik",
+    "email": "aditi.naik@terna.edu",
+    "department": "aids",
+    "cgpa": 6.82,
+    "resumeScore": 78,
+    "skills": [
+      "Docker",
+      "IoT",
+      "Embedded C",
+      "HTML",
+      "SolidWorks"
+    ],
+    "phone": "9555095351",
+    "year": 2,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 5,
+    "name": "Divya D\u2019Souza",
+    "email": "divya.d\u2019souza@terna.edu",
+    "department": "extc",
+    "cgpa": 6.54,
+    "resumeScore": 94,
+    "skills": [
+      "Data Analysis",
+      "Rust",
+      "Linux",
+      "Git"
+    ],
+    "phone": "9508343526",
+    "year": 4,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 6,
+    "name": "Ira Patankar",
+    "email": "ira.patankar1@terna.edu",
+    "department": "aids",
+    "cgpa": 8.45,
+    "resumeScore": 90,
+    "skills": [
+      "TensorFlow",
+      "Git",
+      "Go",
+      "Kubernetes"
+    ],
+    "phone": "9424518384",
+    "year": 2,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 7,
+    "name": "Ira Sawant",
+    "email": "ira.sawant@terna.edu",
+    "department": "aids",
+    "cgpa": 9.72,
+    "resumeScore": 82,
+    "skills": [
+      "Django",
+      "Linux",
+      "Python"
+    ],
+    "phone": "9794262860",
+    "year": 2,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 8,
+    "name": "Swati Menon",
+    "email": "swati.menon@terna.edu",
+    "department": "it",
+    "cgpa": 8.93,
+    "resumeScore": 67,
+    "skills": [
+      "Angular",
+      "Pandas",
+      "Go",
+      "Node.js",
+      "GraphQL"
+    ],
+    "phone": "9160899458",
+    "year": 3,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 9,
+    "name": "Aditi Thakur",
+    "email": "aditi.thakur@terna.edu",
+    "department": "extc",
+    "cgpa": 9.61,
+    "resumeScore": 88,
+    "skills": [
+      "Node.js",
+      "Flask",
+      "IoT"
+    ],
+    "phone": "9172851938",
+    "year": 4,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 10,
+    "name": "Payal Kulkarni",
+    "email": "payal.kulkarni@terna.edu",
+    "department": "it",
+    "cgpa": 6.55,
+    "resumeScore": 95,
+    "skills": [
+      "Embedded C",
+      "Angular",
+      "NLP",
+      "Git",
+      "AWS Basics",
+      "Operating Systems"
+    ],
+    "phone": "9198737989",
+    "year": 2,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 11,
+    "name": "Manav Dubey",
+    "email": "manav.dubey@terna.edu",
+    "department": "extc",
+    "cgpa": 7.57,
+    "resumeScore": 76,
+    "skills": [
+      "Data Analysis",
+      "Python",
+      "DSA",
+      "Operating Systems",
+      "SolidWorks"
+    ],
+    "phone": "9731764671",
+    "year": 2,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 12,
+    "name": "Om More",
+    "email": "om.more@terna.edu",
+    "department": "mechanical",
+    "cgpa": 9.13,
+    "resumeScore": 64,
+    "skills": [
+      "MATLAB",
+      "NumPy",
+      "REST APIs",
+      "IoT",
+      "TensorFlow"
+    ],
+    "phone": "9161392107",
+    "year": 3,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 13,
+    "name": "Karan Pawar",
+    "email": "karan.pawar@terna.edu",
+    "department": "mechatronics",
+    "cgpa": 6.56,
+    "resumeScore": 76,
+    "skills": [
+      "C++",
+      "HTML",
+      "Networking",
+      "Kubernetes",
+      "Blockchain"
+    ],
+    "phone": "9677043616",
+    "year": 3,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 14,
+    "name": "Ananya Mehta",
+    "email": "ananya.mehta@terna.edu",
+    "department": "it",
+    "cgpa": 6.72,
+    "resumeScore": 68,
+    "skills": [
+      "HTML",
+      "IoT",
+      "NLP"
+    ],
+    "phone": "9237637129",
+    "year": 2,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 15,
+    "name": "Meera Sharma",
+    "email": "meera.sharma@terna.edu",
+    "department": "aids",
+    "cgpa": 7.24,
+    "resumeScore": 82,
+    "skills": [
+      "Kotlin",
+      "Spring Boot",
+      "TensorFlow",
+      "SQL",
+      "Blockchain"
+    ],
+    "phone": "9151556228",
+    "year": 3,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 16,
+    "name": "Meera Reddy",
+    "email": "meera.reddy@terna.edu",
+    "department": "civil",
+    "cgpa": 9.7,
+    "resumeScore": 87,
+    "skills": [
+      "Operating Systems",
+      "Java",
+      "Pandas",
+      "Computer Vision",
+      "Blockchain"
+    ],
+    "phone": "9798820775",
+    "year": 4,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 17,
+    "name": "Ritika Chopra",
+    "email": "ritika.chopra@terna.edu",
+    "department": "civil",
+    "cgpa": 6.96,
+    "resumeScore": 72,
+    "skills": [
+      "Embedded C",
+      "Kubernetes",
+      "Power BI"
+    ],
+    "phone": "9318700861",
+    "year": 2,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 18,
+    "name": "Akash More",
+    "email": "akash.more@terna.edu",
+    "department": "comps",
+    "cgpa": 7.92,
+    "resumeScore": 76,
+    "skills": [
+      "TensorFlow",
+      "Operating Systems",
+      "Deep Learning",
+      "Swift",
+      "Docker"
+    ],
+    "phone": "9842734960",
+    "year": 4,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 19,
+    "name": "Aditya Menon",
+    "email": "aditya.menon@terna.edu",
+    "department": "civil",
+    "cgpa": 8.36,
+    "resumeScore": 78,
+    "skills": [
+      "Rust",
+      "AWS Basics",
+      "SolidWorks"
+    ],
+    "phone": "9442926461",
+    "year": 4,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 20,
+    "name": "Tanvi Verma",
+    "email": "tanvi.verma@terna.edu",
+    "department": "aids",
+    "cgpa": 7.67,
+    "resumeScore": 71,
+    "skills": [
+      "C++",
+      "SolidWorks",
+      "Kotlin",
+      "REST APIs",
+      "Kubernetes"
+    ],
+    "phone": "9436500749",
+    "year": 3,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 21,
+    "name": "Rohan Khanna",
+    "email": "rohan.khanna@terna.edu",
+    "department": "it",
+    "cgpa": 7.76,
+    "resumeScore": 62,
+    "skills": [
+      "Power BI",
+      "DSA",
+      "C++",
+      "AutoCAD",
+      "CSS"
+    ],
+    "phone": "9474832821",
+    "year": 2,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 22,
+    "name": "Aarav Singh",
+    "email": "aarav.singh@terna.edu",
+    "department": "aids",
+    "cgpa": 8.48,
+    "resumeScore": 62,
+    "skills": [
+      "Pandas",
+      "NumPy",
+      "Git",
+      "Power BI"
+    ],
+    "phone": "9580571589",
+    "year": 3,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 23,
+    "name": "Varun Kulkarni",
+    "email": "varun.kulkarni@terna.edu",
+    "department": "elex",
+    "cgpa": 9.8,
+    "resumeScore": 93,
+    "skills": [
+      "JavaScript",
+      "Operating Systems",
+      "Embedded C",
+      "Django",
+      "Swift",
+      "Deep Learning"
+    ],
+    "phone": "9458016889",
+    "year": 3,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 24,
+    "name": "Nisha Sethi",
+    "email": "nisha.sethi@terna.edu",
+    "department": "civil",
+    "cgpa": 9.03,
+    "resumeScore": 85,
+    "skills": [
+      "Vue.js",
+      "Blockchain",
+      "CSS"
+    ],
+    "phone": "9757603215",
+    "year": 4,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 25,
+    "name": "Parth Kulkarni",
+    "email": "parth.kulkarni@terna.edu",
+    "department": "mechatronics",
+    "cgpa": 7.4,
+    "resumeScore": 62,
+    "skills": [
+      "Linux",
+      "Data Analysis",
+      "React",
+      "Rust"
+    ],
+    "phone": "9798369158",
+    "year": 2,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 26,
+    "name": "Meera Jadhav",
+    "email": "meera.jadhav1@terna.edu",
+    "department": "mechatronics",
+    "cgpa": 8.15,
+    "resumeScore": 76,
+    "skills": [
+      "Pandas",
+      "Git",
+      "Tableau",
+      "Networking",
+      "Java",
+      "SQL"
+    ],
+    "phone": "9227586152",
+    "year": 4,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 27,
+    "name": "Ananya Chopra",
+    "email": "ananya.chopra@terna.edu",
+    "department": "civil",
+    "cgpa": 6.91,
+    "resumeScore": 87,
+    "skills": [
+      "Operating Systems",
+      "Vue.js",
+      "Git",
+      "Linux",
+      "NumPy",
+      "JavaScript"
+    ],
+    "phone": "9198453254",
+    "year": 3,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 28,
+    "name": "Simran Chopra",
+    "email": "simran.chopra@terna.edu",
+    "department": "comps",
+    "cgpa": 7.71,
+    "resumeScore": 77,
+    "skills": [
+      "React",
+      "Rust",
+      "Cybersecurity",
+      "Operating Systems",
+      "Networking",
+      "Data Analysis"
+    ],
+    "phone": "9475342105",
+    "year": 4,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 29,
+    "name": "Om Iyer",
+    "email": "om.iyer@terna.edu",
+    "department": "it",
+    "cgpa": 7.81,
+    "resumeScore": 64,
+    "skills": [
+      "Swift",
+      "Linux",
+      "Blockchain"
+    ],
+    "phone": "9399742627",
+    "year": 2,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 30,
+    "name": "Sneha Dubey",
+    "email": "sneha.dubey@terna.edu",
+    "department": "it",
+    "cgpa": 7.23,
+    "resumeScore": 91,
+    "skills": [
+      "CSS",
+      "MongoDB",
+      "Deep Learning"
+    ],
+    "phone": "9293819613",
+    "year": 4,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 31,
+    "name": "Riya Kohli",
+    "email": "riya.kohli@terna.edu",
+    "department": "extc",
+    "cgpa": 8.71,
+    "resumeScore": 66,
+    "skills": [
+      "Computer Vision",
+      "IoT",
+      "Embedded C",
+      "TensorFlow"
+    ],
+    "phone": "9192139870",
+    "year": 4,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 32,
+    "name": "Aditi Patankar",
+    "email": "aditi.patankar@terna.edu",
+    "department": "mechanical",
+    "cgpa": 8.25,
+    "resumeScore": 83,
+    "skills": [
+      "Swift",
+      "Data Analysis",
+      "DSA",
+      "REST APIs",
+      "Power BI"
+    ],
+    "phone": "9959023721",
+    "year": 2,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 33,
+    "name": "Shreya Pillai",
+    "email": "shreya.pillai@terna.edu",
+    "department": "elex",
+    "cgpa": 8.28,
+    "resumeScore": 90,
+    "skills": [
+      "Operating Systems",
+      "JavaScript",
+      "MATLAB",
+      "GraphQL",
+      "Angular",
+      "Swift"
+    ],
+    "phone": "9410336669",
+    "year": 2,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 34,
+    "name": "Ishaan Verma",
+    "email": "ishaan.verma@terna.edu",
+    "department": "civil",
+    "cgpa": 6.88,
+    "resumeScore": 64,
+    "skills": [
+      "Embedded C",
+      "NLP",
+      "SQL"
+    ],
+    "phone": "9456570425",
+    "year": 4,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 35,
+    "name": "Vivaan Gill",
+    "email": "vivaan.gill@terna.edu",
+    "department": "aids",
+    "cgpa": 7.4,
+    "resumeScore": 76,
+    "skills": [
+      "Pandas",
+      "Kubernetes",
+      "Node.js"
+    ],
+    "phone": "9710394595",
+    "year": 3,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 36,
+    "name": "Ananya Bhandari",
+    "email": "ananya.bhandari@terna.edu",
+    "department": "mechatronics",
+    "cgpa": 6.73,
+    "resumeScore": 72,
+    "skills": [
+      "Algorithms",
+      "Networking",
+      "Java",
+      "Computer Vision",
+      "Embedded C"
+    ],
+    "phone": "9239334950",
+    "year": 2,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 37,
+    "name": "Payal Fernandes",
+    "email": "payal.fernandes@terna.edu",
+    "department": "civil",
+    "cgpa": 7.82,
+    "resumeScore": 90,
+    "skills": [
+      "Cybersecurity",
+      "NumPy",
+      "Linux",
+      "React"
+    ],
+    "phone": "9520118572",
+    "year": 4,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 38,
+    "name": "Tejas Aggarwal",
+    "email": "tejas.aggarwal@terna.edu",
+    "department": "extc",
+    "cgpa": 6.82,
+    "resumeScore": 90,
+    "skills": [
+      "Operating Systems",
+      "AWS Basics",
+      "Kubernetes",
+      "NumPy",
+      "Linux",
+      "Deep Learning"
+    ],
+    "phone": "9268591488",
+    "year": 3,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 39,
+    "name": "Krishna Tripathi",
+    "email": "krishna.tripathi@terna.edu",
+    "department": "it",
+    "cgpa": 8.12,
+    "resumeScore": 84,
+    "skills": [
+      "Angular",
+      "Algorithms",
+      "Git",
+      "AWS Basics",
+      "React"
+    ],
+    "phone": "9181602248",
+    "year": 3,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 40,
+    "name": "Krishna Verma",
+    "email": "krishna.verma@terna.edu",
+    "department": "elex",
+    "cgpa": 6.84,
+    "resumeScore": 67,
+    "skills": [
+      "HTML",
+      "Tableau",
+      "Python"
+    ],
+    "phone": "9469427501",
+    "year": 2,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 41,
+    "name": "Neha Bajaj",
+    "email": "neha.bajaj@terna.edu",
+    "department": "mechatronics",
+    "cgpa": 9.54,
+    "resumeScore": 92,
+    "skills": [
+      "Algorithms",
+      "Embedded C",
+      "Node.js"
+    ],
+    "phone": "9939134450",
+    "year": 4,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 42,
+    "name": "Amit Patankar",
+    "email": "amit.patankar@terna.edu",
+    "department": "mechanical",
+    "cgpa": 6.98,
+    "resumeScore": 80,
+    "skills": [
+      "TypeScript",
+      "DSA",
+      "REST APIs",
+      "JavaScript",
+      "NumPy"
+    ],
+    "phone": "9415501153",
+    "year": 3,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 43,
+    "name": "Neha Mittal",
+    "email": "neha.mittal@terna.edu",
+    "department": "elex",
+    "cgpa": 9.33,
+    "resumeScore": 84,
+    "skills": [
+      "REST APIs",
+      "Kubernetes",
+      "Tableau",
+      "Angular",
+      "DSA",
+      "Embedded C"
+    ],
+    "phone": "9179153585",
+    "year": 2,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 44,
+    "name": "Sneha Mehta",
+    "email": "sneha.mehta@terna.edu",
+    "department": "comps",
+    "cgpa": 9.65,
+    "resumeScore": 78,
+    "skills": [
+      "GraphQL",
+      "MongoDB",
+      "Microcontrollers"
+    ],
+    "phone": "9342507650",
+    "year": 4,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 45,
+    "name": "Amit Sawant",
+    "email": "amit.sawant@terna.edu",
+    "department": "extc",
+    "cgpa": 9.4,
+    "resumeScore": 62,
+    "skills": [
+      "Angular",
+      "Flask",
+      "VLSI",
+      "Pandas"
+    ],
+    "phone": "9164523783",
+    "year": 2,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 46,
+    "name": "Aryan Bajaj",
+    "email": "aryan.bajaj@terna.edu",
+    "department": "it",
+    "cgpa": 9.23,
+    "resumeScore": 95,
+    "skills": [
+      "Python",
+      "Go",
+      "MongoDB"
+    ],
+    "phone": "9480294591",
+    "year": 3,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 47,
+    "name": "Ishaan Solanki",
+    "email": "ishaan.solanki@terna.edu",
+    "department": "elex",
+    "cgpa": 8.92,
+    "resumeScore": 80,
+    "skills": [
+      "Embedded C",
+      "Flask",
+      "CSS",
+      "Python",
+      "Microcontrollers"
+    ],
+    "phone": "9526624797",
+    "year": 4,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 48,
+    "name": "Tejas D\u2019Souza",
+    "email": "tejas.d\u2019souza@terna.edu",
+    "department": "mechatronics",
+    "cgpa": 7.79,
+    "resumeScore": 92,
+    "skills": [
+      "SQL",
+      "Kubernetes",
+      "Operating Systems"
+    ],
+    "phone": "9330635981",
+    "year": 2,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 49,
+    "name": "Priya Chatterjee",
+    "email": "priya.chatterjee@terna.edu",
+    "department": "mechanical",
+    "cgpa": 8.39,
+    "resumeScore": 64,
+    "skills": [
+      "SQL",
+      "SolidWorks",
+      "Flask",
+      "Vue.js",
+      "Deep Learning",
+      "Tableau"
+    ],
+    "phone": "9562821085",
+    "year": 3,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 50,
+    "name": "Tanvi More",
+    "email": "tanvi.more@terna.edu",
+    "department": "it",
+    "cgpa": 8.48,
+    "resumeScore": 67,
+    "skills": [
+      "Swift",
+      "TypeScript",
+      "NumPy",
+      "Kotlin",
+      "Operating Systems",
+      "Embedded C"
+    ],
+    "phone": "9215042780",
+    "year": 4,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 51,
+    "name": "Neha Shinde",
+    "email": "neha.shinde@terna.edu",
+    "department": "aids",
+    "cgpa": 8.66,
+    "resumeScore": 76,
+    "skills": [
+      "Django",
+      "VLSI",
+      "Flask",
+      "MATLAB",
+      "Git",
+      "Spring Boot"
+    ],
+    "phone": "9957456048",
+    "year": 2,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 52,
+    "name": "Pooja Sethi",
+    "email": "pooja.sethi@terna.edu",
+    "department": "it",
+    "cgpa": 7.98,
+    "resumeScore": 94,
+    "skills": [
+      "Angular",
+      "Data Analysis",
+      "Pandas",
+      "Spring Boot",
+      "AWS Basics",
+      "Swift"
+    ],
+    "phone": "9651699001",
+    "year": 3,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 53,
+    "name": "Aditya Dubey",
+    "email": "aditya.dubey@terna.edu",
+    "department": "mechanical",
+    "cgpa": 9.32,
+    "resumeScore": 90,
+    "skills": [
+      "MongoDB",
+      "HTML",
+      "AWS Basics",
+      "Node.js",
+      "Rust",
+      "Blockchain"
+    ],
+    "phone": "9795074822",
+    "year": 3,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 54,
+    "name": "Raj Yadav",
+    "email": "raj.yadav@terna.edu",
+    "department": "comps",
+    "cgpa": 8.95,
+    "resumeScore": 70,
+    "skills": [
+      "Node.js",
+      "Blockchain",
+      "TypeScript",
+      "MATLAB",
+      "SQL"
+    ],
+    "phone": "9316160972",
+    "year": 4,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 55,
+    "name": "Meera Mehta",
+    "email": "meera.mehta@terna.edu",
+    "department": "comps",
+    "cgpa": 8.35,
+    "resumeScore": 63,
+    "skills": [
+      "Algorithms",
+      "VLSI",
+      "GraphQL",
+      "Vue.js",
+      "MATLAB"
+    ],
+    "phone": "9971872020",
+    "year": 2,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 56,
+    "name": "Rajat Fernandes",
+    "email": "rajat.fernandes@terna.edu",
+    "department": "mechatronics",
+    "cgpa": 8.53,
+    "resumeScore": 73,
+    "skills": [
+      "C++",
+      "Linux",
+      "NLP",
+      "Python"
+    ],
+    "phone": "9300764786",
+    "year": 3,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 57,
+    "name": "Akash Das",
+    "email": "akash.das@terna.edu",
+    "department": "civil",
+    "cgpa": 6.98,
+    "resumeScore": 73,
+    "skills": [
+      "IoT",
+      "Django",
+      "NLP",
+      "TensorFlow",
+      "Data Analysis"
+    ],
+    "phone": "9285512203",
+    "year": 2,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 58,
+    "name": "Payal Kamble",
+    "email": "payal.kamble@terna.edu",
+    "department": "aids",
+    "cgpa": 6.8,
+    "resumeScore": 86,
+    "skills": [
+      "Algorithms",
+      "AutoCAD",
+      "Spring Boot",
+      "Rust"
+    ],
+    "phone": "9558112358",
+    "year": 4,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 59,
+    "name": "Aditi Gupta",
+    "email": "aditi.gupta@terna.edu",
+    "department": "comps",
+    "cgpa": 9.49,
+    "resumeScore": 65,
+    "skills": [
+      "Embedded C",
+      "Vue.js",
+      "Cybersecurity",
+      "SolidWorks",
+      "Blockchain"
+    ],
+    "phone": "9243323905",
+    "year": 3,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 60,
+    "name": "Rajat Aggarwal",
+    "email": "rajat.aggarwal@terna.edu",
+    "department": "elex",
+    "cgpa": 9.04,
+    "resumeScore": 61,
+    "skills": [
+      "Swift",
+      "DSA",
+      "Tableau",
+      "Go"
+    ],
+    "phone": "9317116650",
+    "year": 3,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 61,
+    "name": "Arjun Chopra",
+    "email": "arjun.chopra@terna.edu",
+    "department": "mechanical",
+    "cgpa": 7.29,
+    "resumeScore": 71,
+    "skills": [
+      "TensorFlow",
+      "Swift",
+      "SolidWorks",
+      "Git",
+      "Power BI"
+    ],
+    "phone": "9735187644",
+    "year": 3,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 62,
+    "name": "Aditi Menon",
+    "email": "aditi.menon@terna.edu",
+    "department": "aids",
+    "cgpa": 8.84,
+    "resumeScore": 74,
+    "skills": [
+      "NLP",
+      "TensorFlow",
+      "Blockchain",
+      "Rust",
+      "Node.js"
+    ],
+    "phone": "9205982748",
+    "year": 3,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 63,
+    "name": "Ritika Menon",
+    "email": "ritika.menon@terna.edu",
+    "department": "comps",
+    "cgpa": 7.37,
+    "resumeScore": 70,
+    "skills": [
+      "Docker",
+      "JavaScript",
+      "Computer Vision"
+    ],
+    "phone": "9412605004",
+    "year": 4,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 64,
+    "name": "Aarav More",
+    "email": "aarav.more@terna.edu",
+    "department": "mechanical",
+    "cgpa": 7.08,
+    "resumeScore": 75,
+    "skills": [
+      "Node.js",
+      "Django",
+      "Swift"
+    ],
+    "phone": "9759502168",
+    "year": 2,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 65,
+    "name": "Divya Kamble",
+    "email": "divya.kamble@terna.edu",
+    "department": "elex",
+    "cgpa": 7.58,
+    "resumeScore": 75,
+    "skills": [
+      "Docker",
+      "Operating Systems",
+      "Tableau",
+      "React",
+      "Pandas",
+      "NLP"
+    ],
+    "phone": "9932666138",
+    "year": 2,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 66,
+    "name": "Mansi Jain",
+    "email": "mansi.jain@terna.edu",
+    "department": "mechanical",
+    "cgpa": 7.89,
+    "resumeScore": 84,
+    "skills": [
+      "Cybersecurity",
+      "Go",
+      "Spring Boot",
+      "MongoDB",
+      "AWS Basics",
+      "CSS"
+    ],
+    "phone": "9404787250",
+    "year": 3,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 67,
+    "name": "Tanya Bose",
+    "email": "tanya.bose@terna.edu",
+    "department": "mechatronics",
+    "cgpa": 7.85,
+    "resumeScore": 85,
+    "skills": [
+      "Embedded C",
+      "CSS",
+      "Java",
+      "Spring Boot",
+      "Data Analysis"
+    ],
+    "phone": "9581729209",
+    "year": 4,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 68,
+    "name": "Om Chopra",
+    "email": "om.chopra@terna.edu",
+    "department": "comps",
+    "cgpa": 8.93,
+    "resumeScore": 64,
+    "skills": [
+      "Git",
+      "Microcontrollers",
+      "CSS",
+      "Kubernetes",
+      "DSA",
+      "Flask"
+    ],
+    "phone": "9232778752",
+    "year": 2,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 69,
+    "name": "Nikhil Bhandari",
+    "email": "nikhil.bhandari@terna.edu",
+    "department": "aids",
+    "cgpa": 9.7,
+    "resumeScore": 85,
+    "skills": [
+      "Python",
+      "HTML",
+      "Machine Learning",
+      "CSS"
+    ],
+    "phone": "9604047766",
+    "year": 4,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 70,
+    "name": "Manav Solanki",
+    "email": "manav.solanki@terna.edu",
+    "department": "it",
+    "cgpa": 7.07,
+    "resumeScore": 77,
+    "skills": [
+      "Kubernetes",
+      "Vue.js",
+      "MongoDB"
+    ],
+    "phone": "9898971143",
+    "year": 2,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 71,
+    "name": "Vikram Patil",
+    "email": "vikram.patil@terna.edu",
+    "department": "elex",
+    "cgpa": 9.6,
+    "resumeScore": 95,
+    "skills": [
+      "Computer Vision",
+      "Angular",
+      "JavaScript",
+      "Cybersecurity"
+    ],
+    "phone": "9749275433",
+    "year": 3,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 72,
+    "name": "Priya Thakur",
+    "email": "priya.thakur@terna.edu",
+    "department": "it",
+    "cgpa": 8.06,
+    "resumeScore": 83,
+    "skills": [
+      "AWS Basics",
+      "REST APIs",
+      "TypeScript",
+      "TensorFlow",
+      "Vue.js"
+    ],
+    "phone": "9848519344",
+    "year": 3,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 73,
+    "name": "Ananya Shetty",
+    "email": "ananya.shetty@terna.edu",
+    "department": "elex",
+    "cgpa": 9.63,
+    "resumeScore": 84,
+    "skills": [
+      "Algorithms",
+      "CSS",
+      "HTML"
+    ],
+    "phone": "9953705477",
+    "year": 3,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 74,
+    "name": "Tejas Deshmukh",
+    "email": "tejas.deshmukh@terna.edu",
+    "department": "aids",
+    "cgpa": 7.23,
+    "resumeScore": 68,
+    "skills": [
+      "Node.js",
+      "Angular",
+      "GraphQL",
+      "Flask",
+      "Cybersecurity",
+      "Embedded C"
+    ],
+    "phone": "9248355216",
+    "year": 3,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 75,
+    "name": "Dev Solanki",
+    "email": "dev.solanki@terna.edu",
+    "department": "extc",
+    "cgpa": 8.23,
+    "resumeScore": 74,
+    "skills": [
+      "Deep Learning",
+      "Swift",
+      "Machine Learning",
+      "Networking"
+    ],
+    "phone": "9499262888",
+    "year": 3,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 76,
+    "name": "Rohan Reddy",
+    "email": "rohan.reddy@terna.edu",
+    "department": "mechatronics",
+    "cgpa": 6.97,
+    "resumeScore": 70,
+    "skills": [
+      "Blockchain",
+      "DSA",
+      "Kotlin",
+      "JavaScript"
+    ],
+    "phone": "9680986717",
+    "year": 3,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 77,
+    "name": "Ishaan Ghosh",
+    "email": "ishaan.ghosh@terna.edu",
+    "department": "aids",
+    "cgpa": 9.05,
+    "resumeScore": 69,
+    "skills": [
+      "Git",
+      "Rust",
+      "Spring Boot",
+      "CSS",
+      "Networking",
+      "Blockchain"
+    ],
+    "phone": "9209392952",
+    "year": 2,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 78,
+    "name": "Divya Mehta",
+    "email": "divya.mehta@terna.edu",
+    "department": "extc",
+    "cgpa": 8.98,
+    "resumeScore": 77,
+    "skills": [
+      "DSA",
+      "Kotlin",
+      "Operating Systems",
+      "Machine Learning",
+      "Pandas",
+      "Blockchain"
+    ],
+    "phone": "9591128976",
+    "year": 2,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 79,
+    "name": "Payal Mukherjee",
+    "email": "payal.mukherjee@terna.edu",
+    "department": "aids",
+    "cgpa": 8.68,
+    "resumeScore": 72,
+    "skills": [
+      "MATLAB",
+      "CSS",
+      "Django",
+      "DSA"
+    ],
+    "phone": "9412548048",
+    "year": 3,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 80,
+    "name": "Gaurav Shinde",
+    "email": "gaurav.shinde@terna.edu",
+    "department": "aids",
+    "cgpa": 8.85,
+    "resumeScore": 93,
+    "skills": [
+      "TypeScript",
+      "Spring Boot",
+      "JavaScript",
+      "Python",
+      "VLSI"
+    ],
+    "phone": "9572524840",
+    "year": 3,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 81,
+    "name": "Amit Jadhav",
+    "email": "amit.jadhav@terna.edu",
+    "department": "civil",
+    "cgpa": 7.12,
+    "resumeScore": 69,
+    "skills": [
+      "Operating Systems",
+      "GraphQL",
+      "Docker",
+      "Linux",
+      "Kubernetes",
+      "Rust"
+    ],
+    "phone": "9202385210",
+    "year": 2,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 82,
+    "name": "Sakshi Kulkarni",
+    "email": "sakshi.kulkarni@terna.edu",
+    "department": "civil",
+    "cgpa": 8.44,
+    "resumeScore": 89,
+    "skills": [
+      "Kotlin",
+      "SolidWorks",
+      "GraphQL",
+      "JavaScript",
+      "Django",
+      "Flask"
+    ],
+    "phone": "9398502532",
+    "year": 2,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 83,
+    "name": "Sakshi Iyer",
+    "email": "sakshi.iyer@terna.edu",
+    "department": "it",
+    "cgpa": 7.25,
+    "resumeScore": 65,
+    "skills": [
+      "Power BI",
+      "NLP",
+      "Angular"
+    ],
+    "phone": "9143418969",
+    "year": 2,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 84,
+    "name": "Krishna More",
+    "email": "krishna.more@terna.edu",
+    "department": "comps",
+    "cgpa": 7.35,
+    "resumeScore": 61,
+    "skills": [
+      "SQL",
+      "Blockchain",
+      "NumPy",
+      "Kubernetes",
+      "Power BI",
+      "IoT"
+    ],
+    "phone": "9465209723",
+    "year": 4,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 85,
+    "name": "Nikhil Singh",
+    "email": "nikhil.singh@terna.edu",
+    "department": "mechatronics",
+    "cgpa": 8.65,
+    "resumeScore": 68,
+    "skills": [
+      "SQL",
+      "REST APIs",
+      "DSA",
+      "Pandas"
+    ],
+    "phone": "9856074181",
+    "year": 3,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 86,
+    "name": "Ishaan Sawant",
+    "email": "ishaan.sawant@terna.edu",
+    "department": "it",
+    "cgpa": 8.72,
+    "resumeScore": 82,
+    "skills": [
+      "Go",
+      "Rust",
+      "GraphQL",
+      "Tableau",
+      "MATLAB"
+    ],
+    "phone": "9520905020",
+    "year": 4,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 87,
+    "name": "Pooja Shinde",
+    "email": "pooja.shinde@terna.edu",
+    "department": "aids",
+    "cgpa": 9.74,
+    "resumeScore": 75,
+    "skills": [
+      "Networking",
+      "Data Analysis",
+      "TensorFlow",
+      "Swift",
+      "Python"
+    ],
+    "phone": "9603190116",
+    "year": 3,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 88,
+    "name": "Harsh Khanna",
+    "email": "harsh.khanna@terna.edu",
+    "department": "comps",
+    "cgpa": 8.73,
+    "resumeScore": 75,
+    "skills": [
+      "Linux",
+      "Docker",
+      "MATLAB",
+      "SQL",
+      "Spring Boot"
+    ],
+    "phone": "9763631310",
+    "year": 3,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 89,
+    "name": "Rohan Sawant",
+    "email": "rohan.sawant@terna.edu",
+    "department": "comps",
+    "cgpa": 7.39,
+    "resumeScore": 74,
+    "skills": [
+      "IoT",
+      "Rust",
+      "TensorFlow",
+      "Deep Learning",
+      "C++",
+      "NumPy"
+    ],
+    "phone": "9249062730",
+    "year": 3,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 90,
+    "name": "Ananya Tripathi",
+    "email": "ananya.tripathi@terna.edu",
+    "department": "it",
+    "cgpa": 9.06,
+    "resumeScore": 95,
+    "skills": [
+      "REST APIs",
+      "Algorithms",
+      "Tableau"
+    ],
+    "phone": "9914642464",
+    "year": 4,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 91,
+    "name": "Siddharth Mukherjee",
+    "email": "siddharth.mukherjee@terna.edu",
+    "department": "aids",
+    "cgpa": 6.59,
+    "resumeScore": 65,
+    "skills": [
+      "DSA",
+      "Rust",
+      "Power BI",
+      "Spring Boot",
+      "Kotlin"
+    ],
+    "phone": "9478857965",
+    "year": 2,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 92,
+    "name": "Manav Jain",
+    "email": "manav.jain@terna.edu",
+    "department": "mechanical",
+    "cgpa": 8.51,
+    "resumeScore": 72,
+    "skills": [
+      "Embedded C",
+      "Machine Learning",
+      "Tableau",
+      "Power BI"
+    ],
+    "phone": "9679972669",
+    "year": 4,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 93,
+    "name": "Nikhil Mehta",
+    "email": "nikhil.mehta@terna.edu",
+    "department": "it",
+    "cgpa": 7.58,
+    "resumeScore": 66,
+    "skills": [
+      "Django",
+      "TypeScript",
+      "Go"
+    ],
+    "phone": "9133766977",
+    "year": 3,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 94,
+    "name": "Varun Pillai",
+    "email": "varun.pillai@terna.edu",
+    "department": "it",
+    "cgpa": 7.41,
+    "resumeScore": 62,
+    "skills": [
+      "Swift",
+      "Git",
+      "React",
+      "Linux",
+      "DSA"
+    ],
+    "phone": "9749479295",
+    "year": 4,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 95,
+    "name": "Parth Verma",
+    "email": "parth.verma@terna.edu",
+    "department": "elex",
+    "cgpa": 9.28,
+    "resumeScore": 94,
+    "skills": [
+      "Angular",
+      "REST APIs",
+      "Kubernetes",
+      "Pandas",
+      "NumPy",
+      "JavaScript"
+    ],
+    "phone": "9854881411",
+    "year": 4,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 96,
+    "name": "Vivaan Yadav",
+    "email": "vivaan.yadav@terna.edu",
+    "department": "elex",
+    "cgpa": 7.52,
+    "resumeScore": 84,
+    "skills": [
+      "Git",
+      "AWS Basics",
+      "Vue.js",
+      "Tableau",
+      "Linux"
+    ],
+    "phone": "9525788086",
+    "year": 4,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 97,
+    "name": "Ishaan Thakur",
+    "email": "ishaan.thakur@terna.edu",
+    "department": "extc",
+    "cgpa": 7.22,
+    "resumeScore": 89,
+    "skills": [
+      "Networking",
+      "Kubernetes",
+      "CSS",
+      "HTML"
+    ],
+    "phone": "9512934543",
+    "year": 4,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 98,
+    "name": "Simran Ghosh",
+    "email": "simran.ghosh@terna.edu",
+    "department": "extc",
+    "cgpa": 7.65,
+    "resumeScore": 83,
+    "skills": [
+      "MongoDB",
+      "Node.js",
+      "SolidWorks",
+      "Kotlin",
+      "TensorFlow",
+      "Deep Learning"
+    ],
+    "phone": "9734475613",
+    "year": 3,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 99,
+    "name": "Siddharth Khanna",
+    "email": "siddharth.khanna@terna.edu",
+    "department": "elex",
+    "cgpa": 8.72,
+    "resumeScore": 84,
+    "skills": [
+      "Microcontrollers",
+      "Go",
+      "Machine Learning",
+      "TypeScript"
+    ],
+    "phone": "9149054176",
+    "year": 3,
+    "placementStatus": "Not Placed"
+  },
+  {
+    "id": 100,
+    "name": "Sneha Shetty",
+    "email": "sneha.shetty@terna.edu",
+    "department": "mechatronics",
+    "cgpa": 8.95,
+    "resumeScore": 81,
+    "skills": [
+      "Rust",
+      "Pandas",
+      "TypeScript",
+      "GraphQL",
+      "NumPy",
+      "Java"
+    ],
+    "phone": "9347598990",
+    "year": 3,
+    "placementStatus": "Placed"
+  },
+  {
+    "id": 101,
+    "name": "Aadit Patil",
+    "email": "aaditpatil@terna.edu",
+    "department": "aids",
+    "cgpa": 8.95,
+    "resumeScore": 81,
+    "skills": [
+      "Rust",
+      "Pandas",
+      "TypeScript",
+      "GraphQL",
+      "NumPy",
+      "Java"
+    ],
+    "phone": "9867529011",
+    "year": 3,
+    "placementStatus": "Placed"
+  }
+]

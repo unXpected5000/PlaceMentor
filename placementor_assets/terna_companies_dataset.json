@@ -1,0 +1,559 @@
+[
+  {
+    "id": 1,
+    "name": "HCL",
+    "roles": [
+      "Software Engineer"
+    ],
+    "eligibleDepartments": [
+      "aids",
+      "extc",
+      "elex",
+      "mechanical"
+    ],
+    "minCGPA": 6.1,
+    "minResumeScore": 64,
+    "packageLPA": 13.1,
+    "location": "Hyderabad",
+    "openings": 2
+  },
+  {
+    "id": 2,
+    "name": "Mphasis",
+    "roles": [
+      "Graduate Trainee"
+    ],
+    "eligibleDepartments": [
+      "civil",
+      "mechanical",
+      "aids",
+      "elex",
+      "extc"
+    ],
+    "minCGPA": 7.3,
+    "minResumeScore": 66,
+    "packageLPA": 10.7,
+    "location": "Chennai",
+    "openings": 12
+  },
+  {
+    "id": 3,
+    "name": "Mindtree",
+    "roles": [
+      "Frontend Developer",
+      "Graduate Trainee"
+    ],
+    "eligibleDepartments": [
+      "comps",
+      "extc",
+      "it",
+      "civil"
+    ],
+    "minCGPA": 6.4,
+    "minResumeScore": 70,
+    "packageLPA": 13.8,
+    "location": "Hyderabad",
+    "openings": 17
+  },
+  {
+    "id": 4,
+    "name": "HCL",
+    "roles": [
+      "Graduate Trainee",
+      "Frontend Developer",
+      "Data Analyst"
+    ],
+    "eligibleDepartments": [
+      "civil",
+      "mechanical"
+    ],
+    "minCGPA": 7.8,
+    "minResumeScore": 79,
+    "packageLPA": 6.9,
+    "location": "Pune",
+    "openings": 18
+  },
+  {
+    "id": 5,
+    "name": "Wipro",
+    "roles": [
+      "Consultant",
+      "Electrical Engineer"
+    ],
+    "eligibleDepartments": [
+      "elex",
+      "mechatronics",
+      "mechanical",
+      "it"
+    ],
+    "minCGPA": 7.1,
+    "minResumeScore": 76,
+    "packageLPA": 5.2,
+    "location": "Mumbai",
+    "openings": 9
+  },
+  {
+    "id": 6,
+    "name": "KPMG",
+    "roles": [
+      "Frontend Developer",
+      "Embedded Engineer"
+    ],
+    "eligibleDepartments": [
+      "mechanical",
+      "comps",
+      "civil"
+    ],
+    "minCGPA": 7.9,
+    "minResumeScore": 71,
+    "packageLPA": 11.8,
+    "location": "Chennai",
+    "openings": 11
+  },
+  {
+    "id": 7,
+    "name": "Reliance Jio",
+    "roles": [
+      "System Engineer",
+      "Electrical Engineer",
+      "Software Engineer"
+    ],
+    "eligibleDepartments": [
+      "it",
+      "elex",
+      "civil",
+      "comps",
+      "aids"
+    ],
+    "minCGPA": 7.0,
+    "minResumeScore": 80,
+    "packageLPA": 17.0,
+    "location": "Hyderabad",
+    "openings": 7
+  },
+  {
+    "id": 8,
+    "name": "Wipro",
+    "roles": [
+      "Electrical Engineer"
+    ],
+    "eligibleDepartments": [
+      "it",
+      "aids"
+    ],
+    "minCGPA": 7.9,
+    "minResumeScore": 63,
+    "packageLPA": 4.2,
+    "location": "Bangalore",
+    "openings": 8
+  },
+  {
+    "id": 9,
+    "name": "PwC",
+    "roles": [
+      "Data Analyst"
+    ],
+    "eligibleDepartments": [
+      "comps",
+      "mechanical",
+      "it",
+      "extc",
+      "aids"
+    ],
+    "minCGPA": 6.8,
+    "minResumeScore": 70,
+    "packageLPA": 17.5,
+    "location": "Bangalore",
+    "openings": 14
+  },
+  {
+    "id": 10,
+    "name": "Google",
+    "roles": [
+      "Consultant"
+    ],
+    "eligibleDepartments": [
+      "civil",
+      "aids",
+      "it",
+      "mechanical"
+    ],
+    "minCGPA": 6.1,
+    "minResumeScore": 63,
+    "packageLPA": 4.7,
+    "location": "Mumbai",
+    "openings": 9
+  },
+  {
+    "id": 11,
+    "name": "L&T Infotech",
+    "roles": [
+      "Software Engineer",
+      "Backend Developer",
+      "Full Stack Developer"
+    ],
+    "eligibleDepartments": [
+      "elex",
+      "it",
+      "civil"
+    ],
+    "minCGPA": 7.6,
+    "minResumeScore": 76,
+    "packageLPA": 13.3,
+    "location": "Chennai",
+    "openings": 21
+  },
+  {
+    "id": 12,
+    "name": "Mindtree",
+    "roles": [
+      "Embedded Engineer",
+      "Electrical Engineer",
+      "Graduate Trainee"
+    ],
+    "eligibleDepartments": [
+      "it",
+      "civil",
+      "extc"
+    ],
+    "minCGPA": 7.4,
+    "minResumeScore": 75,
+    "packageLPA": 3.2,
+    "location": "Chennai",
+    "openings": 12
+  },
+  {
+    "id": 13,
+    "name": "KPMG",
+    "roles": [
+      "Software Engineer"
+    ],
+    "eligibleDepartments": [
+      "extc",
+      "civil",
+      "it"
+    ],
+    "minCGPA": 7.1,
+    "minResumeScore": 75,
+    "packageLPA": 10.4,
+    "location": "Chennai",
+    "openings": 18
+  },
+  {
+    "id": 14,
+    "name": "KPMG",
+    "roles": [
+      "Electrical Engineer",
+      "Consultant",
+      "System Engineer"
+    ],
+    "eligibleDepartments": [
+      "mechanical",
+      "extc",
+      "civil",
+      "elex"
+    ],
+    "minCGPA": 7.8,
+    "minResumeScore": 62,
+    "packageLPA": 12.3,
+    "location": "Mumbai",
+    "openings": 16
+  },
+  {
+    "id": 15,
+    "name": "Flipkart",
+    "roles": [
+      "Civil Engineer",
+      "Consultant"
+    ],
+    "eligibleDepartments": [
+      "elex",
+      "mechanical"
+    ],
+    "minCGPA": 7.8,
+    "minResumeScore": 74,
+    "packageLPA": 15.8,
+    "location": "Chennai",
+    "openings": 9
+  },
+  {
+    "id": 16,
+    "name": "Zoho",
+    "roles": [
+      "Mechanical Engineer"
+    ],
+    "eligibleDepartments": [
+      "comps",
+      "aids"
+    ],
+    "minCGPA": 6.9,
+    "minResumeScore": 71,
+    "packageLPA": 17.8,
+    "location": "Pune",
+    "openings": 9
+  },
+  {
+    "id": 17,
+    "name": "Reliance Jio",
+    "roles": [
+      "System Engineer"
+    ],
+    "eligibleDepartments": [
+      "civil",
+      "extc"
+    ],
+    "minCGPA": 7.9,
+    "minResumeScore": 61,
+    "packageLPA": 8.8,
+    "location": "Hyderabad",
+    "openings": 12
+  },
+  {
+    "id": 18,
+    "name": "Google",
+    "roles": [
+      "Civil Engineer",
+      "Full Stack Developer"
+    ],
+    "eligibleDepartments": [
+      "civil",
+      "extc",
+      "it"
+    ],
+    "minCGPA": 7.4,
+    "minResumeScore": 71,
+    "packageLPA": 14.3,
+    "location": "Delhi",
+    "openings": 4
+  },
+  {
+    "id": 19,
+    "name": "Accenture",
+    "roles": [
+      "Data Analyst"
+    ],
+    "eligibleDepartments": [
+      "it",
+      "extc",
+      "civil",
+      "comps",
+      "aids"
+    ],
+    "minCGPA": 7.2,
+    "minResumeScore": 76,
+    "packageLPA": 5.5,
+    "location": "Bangalore",
+    "openings": 10
+  },
+  {
+    "id": 20,
+    "name": "Mindtree",
+    "roles": [
+      "Full Stack Developer"
+    ],
+    "eligibleDepartments": [
+      "mechatronics",
+      "extc",
+      "mechanical",
+      "it",
+      "elex"
+    ],
+    "minCGPA": 7.5,
+    "minResumeScore": 65,
+    "packageLPA": 15.6,
+    "location": "Mumbai",
+    "openings": 13
+  },
+  {
+    "id": 21,
+    "name": "Persistent",
+    "roles": [
+      "System Engineer",
+      "Graduate Trainee",
+      "Electrical Engineer"
+    ],
+    "eligibleDepartments": [
+      "comps",
+      "aids"
+    ],
+    "minCGPA": 6.1,
+    "minResumeScore": 80,
+    "packageLPA": 7.2,
+    "location": "Delhi",
+    "openings": 22
+  },
+  {
+    "id": 22,
+    "name": "IBM",
+    "roles": [
+      "Full Stack Developer"
+    ],
+    "eligibleDepartments": [
+      "mechanical",
+      "comps",
+      "it"
+    ],
+    "minCGPA": 6.1,
+    "minResumeScore": 64,
+    "packageLPA": 15.8,
+    "location": "Hyderabad",
+    "openings": 21
+  },
+  {
+    "id": 23,
+    "name": "Hexaware",
+    "roles": [
+      "Electrical Engineer",
+      "Consultant"
+    ],
+    "eligibleDepartments": [
+      "aids",
+      "elex",
+      "extc"
+    ],
+    "minCGPA": 6.7,
+    "minResumeScore": 67,
+    "packageLPA": 9.3,
+    "location": "Delhi",
+    "openings": 8
+  },
+  {
+    "id": 24,
+    "name": "HCL",
+    "roles": [
+      "Electrical Engineer",
+      "Embedded Engineer",
+      "Consultant"
+    ],
+    "eligibleDepartments": [
+      "mechatronics",
+      "aids",
+      "extc",
+      "elex",
+      "civil"
+    ],
+    "minCGPA": 7.0,
+    "minResumeScore": 62,
+    "packageLPA": 16.9,
+    "location": "Pune",
+    "openings": 13
+  },
+  {
+    "id": 25,
+    "name": "Accenture",
+    "roles": [
+      "Backend Developer",
+      "Civil Engineer",
+      "Frontend Developer"
+    ],
+    "eligibleDepartments": [
+      "mechanical",
+      "civil",
+      "comps",
+      "extc"
+    ],
+    "minCGPA": 7.9,
+    "minResumeScore": 76,
+    "packageLPA": 10.6,
+    "location": "Mumbai",
+    "openings": 13
+  },
+  {
+    "id": 26,
+    "name": "TCS",
+    "roles": [
+      "Backend Developer",
+      "System Engineer",
+      "Software Engineer"
+    ],
+    "eligibleDepartments": [
+      "mechanical",
+      "aids",
+      "civil",
+      "comps",
+      "extc"
+    ],
+    "minCGPA": 8.0,
+    "minResumeScore": 76,
+    "packageLPA": 13.7,
+    "location": "Bangalore",
+    "openings": 4
+  },
+  {
+    "id": 27,
+    "name": "Wipro",
+    "roles": [
+      "Mechanical Engineer",
+      "Electrical Engineer"
+    ],
+    "eligibleDepartments": [
+      "it",
+      "mechanical",
+      "extc"
+    ],
+    "minCGPA": 7.2,
+    "minResumeScore": 71,
+    "packageLPA": 16.2,
+    "location": "Delhi",
+    "openings": 3
+  },
+  {
+    "id": 28,
+    "name": "TCS",
+    "roles": [
+      "Software Engineer",
+      "Data Analyst",
+      "Consultant"
+    ],
+    "eligibleDepartments": [
+      "it",
+      "extc",
+      "mechanical",
+      "elex",
+      "civil"
+    ],
+    "minCGPA": 7.4,
+    "minResumeScore": 64,
+    "packageLPA": 15.4,
+    "location": "Pune",
+    "openings": 6
+  },
+  {
+    "id": 29,
+    "name": "Byju's",
+    "roles": [
+      "Frontend Developer",
+      "Graduate Trainee",
+      "Civil Engineer"
+    ],
+    "eligibleDepartments": [
+      "mechanical",
+      "aids",
+      "it",
+      "extc",
+      "comps"
+    ],
+    "minCGPA": 7.2,
+    "minResumeScore": 67,
+    "packageLPA": 14.5,
+    "location": "Pune",
+    "openings": 5
+  },
+  {
+    "id": 30,
+    "name": "Accenture",
+    "roles": [
+      "Data Analyst"
+    ],
+    "eligibleDepartments": [
+      "civil",
+      "mechanical",
+      "elex"
+    ],
+    "minCGPA": 8.0,
+    "minResumeScore": 72,
+    "packageLPA": 11.1,
+    "location": "Hyderabad",
+    "openings": 21
+  }
+]

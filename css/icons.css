@@ -1,0 +1,34 @@
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  margin-right: 10px;
+  border-radius: 2px;
+  flex: 0 0 14px;
+}
+
+.icon-dashboard {
+  background: #1d4ed8;
+}
+
+.icon-students {
+  background: #4f46e5;
+}
+
+.icon-resume {
+  background: #f97316;
+}
+
+.icon-applications {
+  background: #16a34a;
+}
+
+.icon-analytics {
+  background: #7c3aed;
+}
+
+.icon-profile {
+  background: #6b7280;
+}
