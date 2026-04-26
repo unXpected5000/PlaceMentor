@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "name": "Meena Deshmukh",
+    "email": "meena.deshmukh@terna.edu",
+    "department": "extc",
+    "role": "tnp_officer",
+    "designation": "Placement Head",
+    "experienceYears": 17,
+    "phone": "9305116702"
+  },
+  {
+    "id": 2,
+    "name": "Suresh Iyer",
+    "email": "suresh.iyer@terna.edu",
+    "department": "extc",
+    "role": "tnp_officer",
+    "designation": "Training & Placement Coordinator",
+    "experienceYears": 10,
+    "phone": "9222387174"
+  },
+  {
+    "id": 3,
+    "name": "Seema Kulkarni",
+    "email": "seema.kulkarni@terna.edu",
+    "department": "it",
+    "role": "tnp_officer",
+    "designation": "Placement Head",
+    "experienceYears": 20,
+    "phone": "9169089966"
+  },
+  {
+    "id": 4,
+    "name": "Rakesh Kulkarni",
+    "email": "rakesh.kulkarni@terna.edu",
+    "department": "extc",
+    "role": "tnp_officer",
+    "designation": "TNP Officer",
+    "experienceYears": 16,
+    "phone": "9788279619"
+  },
+  {
+    "id": 5,
+    "name": "Neelam Deshmukh",
+    "email": "neelam.deshmukh@terna.edu",
+    "department": "aids",
+    "role": "tnp_officer",
+    "designation": "Placement Head",
+    "experienceYears": 25,
+    "phone": "9690134388"
+  },
+  {
+    "id": 6,
+    "name": "Gaurav Deshmukh",
+    "email": "gaurav.deshmukh@terna.edu",
+    "department": "tnp",
+    "role": "tnp_officer",
+    "designation": "Placement Head",
+    "experienceYears": 25,
+    "phone": "9690134388"
+  }
+]

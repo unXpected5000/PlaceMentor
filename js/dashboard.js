@@ -1,14 +1,16 @@
 import {
-  calculateProfileStrength,
-  getEligibleCompanies,
-  getPlacementTips,
-} from "./data.js";
+  buildAnalytics,
+  getCompanyMatches,
+  getStudentInsights,
+} from "./analysis.js";
 import { avatarMarkup } from "./profile.js";
 import {
   allowedRoutes,
+  canEditPlacementStatus,
   canEditStudents,
   canManageCompanies,
   canManageDatasets,
+  canManageFaculty,
   canViewAllStudents,
   canViewAnalytics,
   roleLabel,
@@ -22,15 +24,77 @@ function average(values) {
 }
 
 function statusClass(status) {
-  return String(status || "").toLowerCase().includes("placed") ? "selected" : "applied";
+  const lower = String(status || "").toLowerCase();
+  if (lower.includes("placed")) return "selected";
+  if (lower.includes("interview")) return "warning";
+  return "applied";
 }
 
-function renderStudentsTable(students, role) {
+function studentActions(student, role, viewState) {
+  if (!canEditStudents(role)) return "";
+  if (viewState.editingStudentId === student.id) {
+    return `
+      <td class="row-actions">
+        <button class="button primary small" type="button" data-save-edit="${student.id}">Save</button>
+        <button class="button secondary small" type="button" data-cancel-edit="${student.id}">Cancel</button>
+      </td>
+    `;
+  }
+  return `
+    <td class="row-actions">
+      <button class="button secondary small" type="button" data-start-edit="${student.id}">Edit</button>
+    </td>
+  `;
+}
+
+function renderStudentRow(student, role, viewState) {
+  const isEditing = canEditStudents(role) && viewState.editingStudentId === student.id;
+  if (!isEditing) {
+    return `
+      <tr>
+        <td><strong>${student.name}</strong><br><small>${student.email}</small></td>
+        <td>${student.department.toUpperCase()}</td>
+        <td>${student.cgpa.toFixed(2)}</td>
+        <td>${Math.round(student.resumeScore)}</td>
+        <td>${student.skills.slice(0, 4).join(", ") || "-"}</td>
+        <td><span class="status ${statusClass(student.placementStatus)}">${student.placementStatus}</span></td>
+        ${canEditStudents(role) ? studentActions(student, role, viewState) : ""}
+      </tr>
+    `;
+  }
+
+  return `
+    <tr class="editing-row" data-edit-row="${student.id}">
+      <td>
+        <strong>${student.name}</strong><br><small>${student.email}</small>
+      </td>
+      <td>${student.department.toUpperCase()}</td>
+      <td><input class="table-input" data-field="cgpa" type="number" min="0" max="10" step="0.01" value="${student.cgpa}" /></td>
+      <td><input class="table-input" data-field="resumeScore" type="number" min="0" max="100" step="1" value="${student.resumeScore}" /></td>
+      <td><input class="table-input" data-field="skills" type="text" value="${student.skills.join(", ")}" /></td>
+      <td>
+        ${
+          canEditPlacementStatus(role)
+            ? `
+              <select class="table-input" data-field="placementStatus">
+                ${["Not Placed", "Shortlisted", "Interviewing", "Placed"]
+                  .map((status) => `<option value="${status}" ${status === student.placementStatus ? "selected" : ""}>${status}</option>`)
+                  .join("")}
+              </select>
+            `
+            : `<span class="status ${statusClass(student.placementStatus)}">${student.placementStatus}</span>`
+        }
+      </td>
+      ${studentActions(student, role, viewState)}
+    </tr>
+  `;
+}
+
+function renderStudentsTable(students, role, viewState) {
   const actionHead = canEditStudents(role) ? "<th>Actions</th>" : "";
-  const actionCells = (student) =>
-    canEditStudents(role)
-      ? `<td><button class="button secondary" type="button" data-edit-student="${student.id}">Edit</button></td>`
-      : "";
+  const body = students.length
+    ? students.map((student) => renderStudentRow(student, role, viewState)).join("")
+    : `<tr><td colspan="${canEditStudents(role) ? 7 : 6}">No student records found.</td></tr>`;
 
   return `
     <table class="data-table">
@@ -40,29 +104,79 @@ function renderStudentsTable(students, role) {
           <th>Department</th>
           <th>CGPA</th>
           <th>Resume Score</th>
+          <th>Skills</th>
           <th>Placement Status</th>
           ${actionHead}
         </tr>
       </thead>
-      <tbody>
-        ${
-          students
-            .map(
-              (student) => `
-                <tr>
-                  <td><strong>${student.name}</strong><br><small>${student.email}</small></td>
-                  <td>${student.department.toUpperCase()}</td>
-                  <td>${student.cgpa}</td>
-                  <td>${student.resumeScore}</td>
-                  <td><span class="status ${statusClass(student.placementStatus)}">${student.placementStatus}</span></td>
-                  ${actionCells(student)}
-                </tr>
-              `
-            )
-            .join("") || `<tr><td colspan="${canEditStudents(role) ? 6 : 5}">No student records found.</td></tr>`
-        }
-      </tbody>
+      <tbody>${body}</tbody>
     </table>
+  `;
+}
+
+function renderStudentDashboard(student, companies, resume) {
+  const insights = getStudentInsights(student, companies, resume);
+  return `
+    <section class="two-column">
+      <article class="card span-4">
+        <span class="eyebrow">Profile Strength</span>
+        <h3>${insights.profileStrength}%</h3>
+        <div class="metric-stack">
+          <div class="metric-line"><span>Placement readiness</span><strong>${insights.readiness.label}</strong></div>
+          <div class="metric-line"><span>Best fit role</span><strong>${insights.bestFitRole}</strong></div>
+          <div class="metric-line"><span>Eligible companies</span><strong>${insights.eligibleCompanies.length}</strong></div>
+        </div>
+      </article>
+      <article class="card span-4">
+        <span class="eyebrow">Resume Score Breakdown</span>
+        <h3>${resume?.score || student.resumeScore}</h3>
+        <div class="metric-stack">
+          <div class="metric-line"><span>Structure</span><strong>${insights.resumeBreakdown.structure}/35</strong></div>
+          <div class="metric-line"><span>Content</span><strong>${insights.resumeBreakdown.content}/30</strong></div>
+          <div class="metric-line"><span>Skills</span><strong>${insights.resumeBreakdown.skills}/20</strong></div>
+          <div class="metric-line"><span>Impact</span><strong>${insights.resumeBreakdown.impact}/15</strong></div>
+        </div>
+      </article>
+      <article class="card span-4">
+        <span class="eyebrow">Gap Analysis</span>
+        <h3>Priority Skills</h3>
+        <div class="skill-list">
+          ${insights.gapAnalysis.length ? insights.gapAnalysis.map((skill) => `<span class="skill-pill">${skill}</span>`).join("") : `<span class="skill-pill">No major gaps</span>`}
+        </div>
+      </article>
+    </section>
+    <section class="two-column">
+      <article class="card span-7">
+        <span class="eyebrow">Eligible Companies</span>
+        <h3>Best matches</h3>
+        <div class="list">
+          ${
+            insights.companyMatches.slice(0, 6).map((company) => `
+              <div class="activity-item">
+                <strong>${company.name}</strong> | ${company.roles.join(", ")} | ${company.packageLPA} LPA
+                <br />
+                Match Score: ${company.matchScore}% | ${company.eligible ? "Eligible" : company.gapSummary}
+              </div>
+            `).join("") || `<div class="activity-item">No companies available.</div>`
+          }
+        </div>
+      </article>
+      <article class="card span-5">
+        <span class="eyebrow">Recommendations</span>
+        <h3>Action Plan</h3>
+        <div class="list">
+          ${insights.placementTips.map((tip) => `<div class="activity-item">${tip}</div>`).join("")}
+        </div>
+        <div class="inline-note">Suggested learning areas are generated from missing company requirements and role demand.</div>
+      </article>
+    </section>
+    <section class="card">
+      <span class="eyebrow">Suggested Courses</span>
+      <h3>Learning areas to close gaps</h3>
+      <div class="course-grid">
+        ${insights.suggestedCourses.map((course) => `<div class="activity-item"><strong>${course.area}</strong><br>${course.reason}</div>`).join("") || `<div class="activity-item">No course recommendations yet.</div>`}
+      </div>
+    </section>
   `;
 }
 
@@ -73,10 +187,8 @@ export function getFilteredStudents(state, filters, currentUser) {
 
   return baseStudents
     .filter((student) => {
-      const departmentMatch =
-        filters.department === "all" || student.department === filters.department;
-      const statusMatch =
-        filters.status === "all" || student.placementStatus === filters.status;
+      const departmentMatch = filters.department === "all" || student.department === filters.department;
+      const statusMatch = filters.status === "all" || student.placementStatus === filters.status;
       const searchMatch =
         !filters.query ||
         student.name.toLowerCase().includes(filters.query) ||
@@ -84,10 +196,10 @@ export function getFilteredStudents(state, filters, currentUser) {
         student.department.toLowerCase().includes(filters.query);
       return departmentMatch && statusMatch && searchMatch;
     })
-    .sort((a, b) => {
-      if (filters.sort === "cgpa") return Number(b.cgpa) - Number(a.cgpa);
-      if (filters.sort === "resume") return Number(b.resumeScore) - Number(a.resumeScore);
-      return a.name.localeCompare(b.name);
+    .sort((left, right) => {
+      if (filters.sort === "cgpa") return Number(right.cgpa) - Number(left.cgpa);
+      if (filters.sort === "resume") return Number(right.resumeScore) - Number(left.resumeScore);
+      return left.name.localeCompare(right.name);
     });
 }
 
@@ -143,77 +255,39 @@ export function renderActivity(container, state) {
     .join("");
 }
 
-export function renderStudentsSection(container, students, role) {
-  container.innerHTML = renderStudentsTable(students, role);
+export function renderStudentsSection(container, students, role, viewState) {
+  container.innerHTML = renderStudentsTable(students, role, viewState);
 }
 
-export function renderRoute(container, state, currentUser, route, filteredStudents, profile = {}) {
+export function renderRoute(container, state, currentUser, route, filteredStudents, profile = {}, viewState = {}) {
   if (route === "dashboard") {
     if (currentUser.role === ROLES.STUDENT) {
       const student = state.students.find((item) => item.email === currentUser.email);
-      if (!student) {
-        container.innerHTML = `<section class="card"><h3>No student record found</h3></section>`;
-        return;
-      }
-
-      const eligibleCompanies = getEligibleCompanies(student, state.companies);
-      const tips = getPlacementTips(student, state.companies);
-      const profileStrength = calculateProfileStrength(student);
-      container.innerHTML = `
-        <section class="two-column">
-          <article class="card span-6">
-            <span class="eyebrow">Personal Dashboard</span>
-            <h3>${student.name}</h3>
-            <div class="list">
-              <div class="activity-item">Department: ${student.department.toUpperCase()}</div>
-              <div class="activity-item">CGPA: ${student.cgpa}</div>
-              <div class="activity-item">Resume Score: ${student.resumeScore}</div>
-              <div class="activity-item">Placement Status: ${student.placementStatus}</div>
-              <div class="activity-item">Profile Strength: ${profileStrength}%</div>
-            </div>
-          </article>
-          <article class="card span-6">
-            <span class="eyebrow">Eligibility</span>
-            <h3>Eligible Companies</h3>
-            <div class="list">
-              ${
-                eligibleCompanies.length
-                  ? eligibleCompanies
-                      .map(
-                        (company) =>
-                          `<div class="activity-item"><strong>${company.name}</strong><br>${company.roles.join(", ")} · ${company.packageLPA} LPA</div>`
-                      )
-                      .join("")
-                  : `<div class="activity-item">No eligible companies currently matched.</div>`
-              }
-            </div>
-          </article>
-        </section>
-        <section class="two-column">
-          <article class="card span-6">
-            <span class="eyebrow">Recommendations</span>
-            <h3>Skills to improve</h3>
-            <div class="skill-list">
-              ${(student.skills || []).map((skill) => `<span class="skill-pill">${skill}</span>`).join("")}
-            </div>
-          </article>
-          <article class="card span-6">
-            <span class="eyebrow">Placement Tips</span>
-            <h3>Context-based guidance</h3>
-            <div class="list">
-              ${tips.map((tip) => `<div class="activity-item">${tip}</div>`).join("")}
-            </div>
-          </article>
-        </section>
-      `;
+      const resume = state.resumes?.[student?.id];
+      container.innerHTML = student
+        ? renderStudentDashboard(student, state.companies, resume)
+        : `<section class="card"><h3>No student record found</h3></section>`;
       return;
     }
 
+    const analytics = buildAnalytics(filteredStudents, state.companies);
     container.innerHTML = `
-      <section class="card">
-        <span class="eyebrow">Students</span>
-        <h3>Student records</h3>
-        <div class="table">${renderStudentsTable(filteredStudents, currentUser.role)}</div>
+      <section class="two-column">
+        <article class="card span-8">
+          <span class="eyebrow">Operational Overview</span>
+          <h3>Student pipeline</h3>
+          <div class="table">${renderStudentsTable(filteredStudents.slice(0, 8), currentUser.role, viewState)}</div>
+        </article>
+        <article class="card span-4">
+          <span class="eyebrow">Insights</span>
+          <h3>Placement summary</h3>
+          <div class="metric-stack">
+            <div class="metric-line"><span>Departments tracked</span><strong>${analytics.departmentRows.length}</strong></div>
+            <div class="metric-line"><span>Roles in demand</span><strong>${analytics.roleDemand.length}</strong></div>
+            <div class="metric-line"><span>Avg CGPA</span><strong>${analytics.avgCgpa}</strong></div>
+            <div class="metric-line"><span>Avg Resume Score</span><strong>${analytics.avgResumeScore}</strong></div>
+          </div>
+        </article>
       </section>
     `;
     return;
@@ -224,7 +298,7 @@ export function renderRoute(container, state, currentUser, route, filteredStuden
       <section class="card">
         <span class="eyebrow">Students</span>
         <h3>All student records</h3>
-        <div class="table">${renderStudentsTable(filteredStudents, currentUser.role)}</div>
+        <div class="table">${renderStudentsTable(filteredStudents, currentUser.role, viewState)}</div>
       </section>
     `;
     return;
@@ -235,22 +309,55 @@ export function renderRoute(container, state, currentUser, route, filteredStuden
     const resume = state.resumes?.[student?.id];
     container.innerHTML = `
       <section class="two-column">
-        <article class="card span-6">
+        <article class="card span-5">
           <span class="eyebrow">Resume Analyzer</span>
           <h3>Upload Resume</h3>
           <label class="dropzone" id="dropzone">
-            <input id="resumeInput" class="hidden" type="file" accept=".pdf" />
-            <span><strong>Upload PDF</strong><br><small>PDF only, 2 MB max</small></span>
+            <input id="resumeInput" class="hidden" type="file" accept=".pdf,.txt" />
+            <span><strong>Upload PDF or Text Resume</strong><br><small>PDF/TXT only, 2 MB max</small></span>
           </label>
+          <div class="progress-shell ${viewState.resumeProgress ? "" : "hidden"}">
+            <div class="progress-bar" style="width:${viewState.resumeProgress || 0}%"></div>
+          </div>
+          <p class="inline-note">${viewState.resumeStatus || "The analyzer checks structure, impact, skills, repetition, and improvement opportunities."}</p>
         </article>
-        <article class="card span-6">
+        <article class="card span-7">
           <span class="eyebrow">Parsed Output</span>
           <h3>Resume Details</h3>
-          <div class="list">
-            <div class="activity-item">Skills: ${(resume?.skills || student?.skills || []).join(", ") || "-"}</div>
-            <div class="activity-item">Education: ${resume?.education || `${student?.department?.toUpperCase() || "-"} Year ${student?.year || "-"}`}</div>
-            <div class="activity-item">Score: ${resume?.score || student?.resumeScore || 0}</div>
-          </div>
+          ${
+            resume
+              ? `
+                <div class="metric-stack">
+                  <div class="metric-line"><span>Resume Score</span><strong>${resume.score}</strong></div>
+                  <div class="metric-line"><span>Education</span><strong>${resume.education}</strong></div>
+                  <div class="metric-line"><span>Experience</span><strong>${resume.experience}</strong></div>
+                </div>
+                <div class="two-column compact-grid">
+                  <div class="card span-6 nested-card">
+                    <span class="eyebrow">Strengths</span>
+                    <div class="list">${(resume.strengths || []).map((item) => `<div class="activity-item">${item}</div>`).join("") || `<div class="activity-item">No strong strengths identified yet.</div>`}</div>
+                  </div>
+                  <div class="card span-6 nested-card">
+                    <span class="eyebrow">Weak Areas</span>
+                    <div class="list">${(resume.weakAreas || []).map((item) => `<div class="activity-item">${item}</div>`).join("") || `<div class="activity-item">No major weak areas detected.</div>`}</div>
+                  </div>
+                </div>
+                <div class="list">
+                  ${(resume.suggestions || []).map((item) => `<div class="activity-item">${item}</div>`).join("") || `<div class="activity-item">Suggestions will appear after analysis.</div>`}
+                </div>
+                <div class="two-column compact-grid">
+                  <div class="card span-6 nested-card">
+                    <span class="eyebrow">Grammar Flags</span>
+                    <div class="list">${(resume.grammarFlags || []).map((item) => `<div class="activity-item">${item}</div>`).join("") || `<div class="activity-item">No major grammar or phrasing alerts.</div>`}</div>
+                  </div>
+                  <div class="card span-6 nested-card">
+                    <span class="eyebrow">Generic Content Signals</span>
+                    <div class="list">${(resume.aiSignals || []).map((item) => `<div class="activity-item">${item}</div>`).join("") || `<div class="activity-item">No strong generic-content signals found.</div>`}</div>
+                  </div>
+                </div>
+              `
+              : `<div class="list"><div class="activity-item">Upload a resume to see extracted skills, education, experience, grammar flags, and line-by-line feedback.</div></div>`
+          }
         </article>
       </section>
     `;
@@ -258,17 +365,15 @@ export function renderRoute(container, state, currentUser, route, filteredStuden
   }
 
   if (route === "applications") {
-    const companies = currentUser.role === ROLES.STUDENT
-      ? getEligibleCompanies(
-          state.students.find((item) => item.email === currentUser.email),
-          state.companies
-        )
-      : state.companies;
+    const student = state.students.find((item) => item.email === currentUser.email);
+    const companies = currentUser.role === ROLES.STUDENT && student
+      ? getCompanyMatches(student, state.companies)
+      : state.companies.map((company) => ({ ...company, matchScore: "-", gapSummary: "-" }));
 
     container.innerHTML = `
       <section class="card">
         <span class="eyebrow">Applications</span>
-        <h3>${currentUser.role === ROLES.STUDENT ? "Eligible companies" : "Company list"}</h3>
+        <h3>${currentUser.role === ROLES.STUDENT ? "Eligible companies and fit analysis" : "Company list"}</h3>
         <table class="data-table">
           <thead>
             <tr>
@@ -276,27 +381,25 @@ export function renderRoute(container, state, currentUser, route, filteredStuden
               <th>Roles</th>
               <th>Departments</th>
               <th>Min CGPA</th>
-              <th>Resume</th>
+              <th>Resume Score</th>
+              <th>Match</th>
+              <th>Gap</th>
               ${canManageCompanies(currentUser.role) ? "<th>Actions</th>" : ""}
             </tr>
           </thead>
           <tbody>
-            ${
-              companies
-                .map(
-                  (company) => `
-                    <tr>
-                      <td>${company.name}</td>
-                      <td>${company.roles.join(", ")}</td>
-                      <td>${company.eligibleDepartments.join(", ").toUpperCase()}</td>
-                      <td>${company.minCGPA}</td>
-                      <td>${company.minResumeScore}</td>
-                      ${canManageCompanies(currentUser.role) ? `<td><button class="button secondary" type="button" data-edit-company="${company.id}">Edit</button> <button class="button danger" type="button" data-delete-company="${company.id}">Delete</button></td>` : ""}
-                    </tr>
-                  `
-                )
-                .join("") || `<tr><td colspan="${canManageCompanies(currentUser.role) ? 6 : 5}">No companies found.</td></tr>`
-            }
+            ${companies.map((company) => `
+              <tr>
+                <td>${company.name}</td>
+                <td>${company.roles.join(", ")}</td>
+                <td>${company.eligibleDepartments.join(", ").toUpperCase()}</td>
+                <td>${company.minCGPA}</td>
+                <td>${company.minResumeScore}</td>
+                <td>${company.matchScore === "-" ? "-" : `${company.matchScore}%`}</td>
+                <td>${company.gapSummary || "-"}</td>
+                ${canManageCompanies(currentUser.role) ? `<td><button class="button secondary small" type="button" data-edit-company="${company.id}">Edit</button> <button class="button danger small" type="button" data-delete-company="${company.id}">Delete</button></td>` : ""}
+              </tr>
+            `).join("")}
           </tbody>
         </table>
       </section>
@@ -305,42 +408,44 @@ export function renderRoute(container, state, currentUser, route, filteredStuden
   }
 
   if (route === "analytics") {
+    const analytics = buildAnalytics(filteredStudents, state.companies);
     container.innerHTML = canViewAnalytics(currentUser.role)
       ? `
         <section class="two-column">
-          <article class="card span-6">
-            <span class="eyebrow">Departments</span>
-            <h3>Department distribution</h3>
+          <article class="card span-7">
+            <span class="eyebrow">Department Analysis</span>
+            <h3>Department placement health</h3>
             <table class="data-table">
-              <thead><tr><th>Department</th><th>Students</th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Department</th>
+                  <th>Total</th>
+                  <th>Placed</th>
+                  <th>Placement Rate</th>
+                  <th>Avg CGPA</th>
+                  <th>Avg Resume</th>
+                </tr>
+              </thead>
               <tbody>
-                ${Object.entries(
-                  filteredStudents.reduce((acc, student) => {
-                    acc[student.department] = (acc[student.department] || 0) + 1;
-                    return acc;
-                  }, {})
-                )
-                  .map(([department, count]) => `<tr><td>${department.toUpperCase()}</td><td>${count}</td></tr>`)
-                  .join("")}
+                ${analytics.departmentRows.map((row) => `
+                  <tr>
+                    <td>${row.department.toUpperCase()}</td>
+                    <td>${row.total}</td>
+                    <td>${row.placed}</td>
+                    <td>${row.placementRate}%</td>
+                    <td>${row.avgCgpa}</td>
+                    <td>${row.avgResume}</td>
+                  </tr>
+                `).join("")}
               </tbody>
             </table>
           </article>
-          <article class="card span-6">
-            <span class="eyebrow">Placement</span>
-            <h3>Status summary</h3>
-            <table class="data-table">
-              <thead><tr><th>Status</th><th>Students</th></tr></thead>
-              <tbody>
-                ${Object.entries(
-                  filteredStudents.reduce((acc, student) => {
-                    acc[student.placementStatus] = (acc[student.placementStatus] || 0) + 1;
-                    return acc;
-                  }, {})
-                )
-                  .map(([status, count]) => `<tr><td>${status}</td><td>${count}</td></tr>`)
-                  .join("")}
-              </tbody>
-            </table>
+          <article class="card span-5">
+            <span class="eyebrow">Role Demand</span>
+            <h3>Company role demand</h3>
+            <div class="list">
+              ${analytics.roleDemand.slice(0, 8).map((row) => `<div class="activity-item"><strong>${row.role}</strong><br>${row.count} companies hiring</div>`).join("")}
+            </div>
           </article>
         </section>
       `
@@ -349,7 +454,7 @@ export function renderRoute(container, state, currentUser, route, filteredStuden
   }
 
   if (route === "profile") {
-    const controls = canManageDatasets(currentUser.role)
+    const managementControls = canManageDatasets(currentUser.role)
       ? `
         <section class="two-column">
           <form class="card span-6" id="datasetImportForm">
@@ -359,6 +464,7 @@ export function renderRoute(container, state, currentUser, route, filteredStuden
               <select id="datasetType">
                 <option value="students">Students</option>
                 <option value="teachers">Teachers</option>
+                <option value="tnp_officers">TNP Officers</option>
                 <option value="companies">Companies</option>
               </select>
             </label>
@@ -375,12 +481,18 @@ export function renderRoute(container, state, currentUser, route, filteredStuden
             <label>Name<input id="companyName" required /></label>
             <label>Roles<input id="companyRoles" placeholder="Comma separated" required /></label>
             <label>Eligible Departments<input id="companyDepartments" placeholder="Comma separated" required /></label>
+            <label>Required Skills<input id="companySkills" placeholder="Comma separated" required /></label>
             <label>Min CGPA<input id="companyCgpa" type="number" step="0.1" required /></label>
             <label>Min Resume Score<input id="companyResume" type="number" required /></label>
             <label>Package LPA<input id="companyPackage" type="number" step="0.1" required /></label>
             <button class="button primary" type="submit">Save Company</button>
           </form>
         </section>
+      `
+      : "";
+
+    const facultyControls = canManageFaculty(currentUser.role)
+      ? `
         <form class="card" id="facultyForm">
           <span class="eyebrow">Faculty Accounts</span>
           <h3>Add Faculty Account</h3>
@@ -415,7 +527,6 @@ export function renderRoute(container, state, currentUser, route, filteredStuden
           <button class="button secondary" type="button" id="refreshProfileButton">Refresh Profile</button>
           ${profile.imageUrl ? `<button class="button danger" type="button" id="removePhotoButton">Remove Photo</button>` : ""}
         </form>
-        <p class="inline-note">Photos are stored in Cloudflare storage so they remain visible after login on other devices.</p>
       </section>
       <section class="card">
         <span class="eyebrow">Verification</span>
@@ -425,7 +536,8 @@ export function renderRoute(container, state, currentUser, route, filteredStuden
           <div class="activity-item"><strong>Last profile sync</strong><br>${profile.updatedAt || "Not synced yet"}</div>
         </div>
       </section>
-      ${controls}
+      ${managementControls}
+      ${facultyControls}
     `;
   }
 }

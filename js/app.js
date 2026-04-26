@@ -1,11 +1,17 @@
 import { clearSession, getSession, getTheme, setSession, setTheme } from "./auth.js";
 import {
-  analyzeResumeFile,
+  addFacultyAccount,
+  addOrUpdateCompany,
+  appendActivity,
+  deleteCompany,
   importDatasetIntoState,
   loadInitialData,
   resetToAssetData,
   saveData,
+  syncCurrentUser,
+  updateStudentRecord,
 } from "./data.js";
+import { analyzeResumeDocument } from "./resume.js";
 import {
   deleteProfilePhoto,
   getProfile,
@@ -22,13 +28,9 @@ import {
   renderStudentsSection,
 } from "./dashboard.js";
 import { formatOtpExpiry, createOtpNotice } from "./otp.js";
-import { applyAvatar, fileToBase64, validateProfileImage } from "./profile.js";
-import {
-  allowedRoutes,
-  canEditStudents,
-  canViewAllStudents,
-  ROLES,
-} from "./roles.js";
+import { fileToBase64, validateProfileImage } from "./profile.js";
+import { allowedRoutes, canViewAllStudents, ROLES } from "./roles.js";
+import { applyTheme, setDrawerOpen, setIdentity, setLoading, showToast } from "./ui.js";
 
 let state = null;
 let currentUser = getSession();
@@ -36,7 +38,13 @@ let currentRoute = "dashboard";
 let currentProfile = {};
 let pendingUser = null;
 let otpTimerId = null;
-let otpExpiresAt = null;
+
+const viewState = {
+  editingStudentId: null,
+  resumeProgress: 0,
+  resumeStatus: "",
+  drawerOpen: false,
+};
 
 const elements = {
   authView: document.getElementById("authView"),
@@ -66,19 +74,13 @@ const elements = {
   userAvatar: document.getElementById("userAvatar"),
   userName: document.getElementById("userName"),
   userRoleLabel: document.getElementById("userRoleLabel"),
+  menuToggle: document.getElementById("menuToggle"),
+  sidebar: document.querySelector(".sidebar"),
+  navOverlay: document.getElementById("navOverlay"),
 };
 
-function showToast(message) {
-  elements.toast.textContent = message;
-  elements.toast.classList.remove("hidden");
-  window.setTimeout(() => elements.toast.classList.add("hidden"), 2600);
-}
-
-function setLoading(element, isLoading) {
-  element?.classList.toggle("loading", isLoading);
-  if (element && "disabled" in element) {
-    element.disabled = isLoading;
-  }
+function toast(message) {
+  showToast(elements.toast, message);
 }
 
 function clearOtpTimer() {
@@ -88,23 +90,17 @@ function clearOtpTimer() {
   }
 }
 
-function applyTheme() {
-  const theme = getTheme();
-  document.body.classList.toggle("dark-mode", theme === "dark");
-  elements.themeToggle.textContent = theme === "dark" ? "Light Mode" : "Dark Mode";
+function applyCurrentTheme() {
+  applyTheme(getTheme(), elements.themeToggle);
 }
 
-function setIdentity() {
-  if (!currentUser) {
-    applyAvatar(elements.userAvatar, "Guest", "");
-    elements.userName.textContent = "Guest";
-    elements.userRoleLabel.textContent = "No active session";
-    return;
-  }
+function updateIdentity() {
+  setIdentity(elements, currentUser, currentProfile);
+}
 
-  applyAvatar(elements.userAvatar, currentUser.name, currentProfile.imageUrl);
-  elements.userName.textContent = currentUser.name;
-  elements.userRoleLabel.textContent = `${currentUser.role.toUpperCase()} | ${currentUser.email}`;
+function updateDrawer(open) {
+  viewState.drawerOpen = open;
+  setDrawerOpen(elements.sidebar, elements.navOverlay, open);
 }
 
 function getStatusOptions() {
@@ -140,6 +136,7 @@ function currentFilters() {
 }
 
 function ensureAllowedRoute() {
+  if (!currentUser) return;
   const routes = allowedRoutes(currentUser.role);
   if (!routes.includes(currentRoute)) {
     currentRoute = "dashboard";
@@ -151,7 +148,6 @@ function showLoginStep() {
   elements.otpForm.classList.add("hidden");
   elements.otpCode.value = "";
   pendingUser = null;
-  otpExpiresAt = null;
   clearOtpTimer();
 }
 
@@ -161,7 +157,6 @@ function showOtpStep(message, expiresAt) {
   elements.otpMessage.textContent = message;
   elements.otpCode.value = "";
   elements.otpCode.focus();
-  otpExpiresAt = expiresAt;
   clearOtpTimer();
   if (expiresAt) {
     otpTimerId = window.setInterval(() => {
@@ -177,7 +172,7 @@ function showOtpStep(message, expiresAt) {
 async function loadRemoteProfile() {
   if (!currentUser) {
     currentProfile = {};
-    setIdentity();
+    updateIdentity();
     return;
   }
 
@@ -187,13 +182,12 @@ async function loadRemoteProfile() {
   } catch (error) {
     currentProfile = {};
   }
-
-  setIdentity();
+  updateIdentity();
 }
 
 function refreshLayout() {
-  applyTheme();
-  setIdentity();
+  applyCurrentTheme();
+  updateIdentity();
 
   if (!currentUser) {
     elements.authView.classList.remove("hidden");
@@ -216,15 +210,17 @@ function refreshLayout() {
   renderStudentsSection(
     elements.studentsTable,
     canViewAllStudents(currentUser.role) ? filteredStudents : filteredStudents.slice(0, 1),
-    currentUser.role
+    currentUser.role,
+    viewState
   );
   renderActivity(elements.activityList, state);
-  renderRoute(elements.routeContainer, state, currentUser, currentRoute, filteredStudents, currentProfile);
+  renderRoute(elements.routeContainer, state, currentUser, currentRoute, filteredStudents, currentProfile, viewState);
   bindRouteActions();
 }
 
 function setRoute(route) {
   currentRoute = route;
+  viewState.editingStudentId = null;
   refreshLayout();
 }
 
@@ -260,57 +256,81 @@ async function completeLogin(code) {
   setRoute("dashboard");
 }
 
-function updateStudent(studentId, updates) {
-  const target = state.students.find((student) => student.id === studentId);
-  if (!target) return;
-  Object.assign(target, updates);
-  state.activity = [`Updated student record for ${target.name}`, ...(state.activity || [])].slice(0, 10);
-  saveData(state);
-}
-
 function saveCompanyFromForm(form) {
   const companyId = form.querySelector("#companyId")?.value?.trim();
-  const nextCompany = {
+  const company = addOrUpdateCompany(state, {
     id: companyId || `company-${Date.now()}`,
     name: form.querySelector("#companyName").value.trim(),
-    roles: form.querySelector("#companyRoles").value.split(",").map((item) => item.trim()).filter(Boolean),
-    eligibleDepartments: form.querySelector("#companyDepartments").value.split(",").map((item) => item.trim().toLowerCase()).filter(Boolean),
+    roles: form.querySelector("#companyRoles").value,
+    eligibleDepartments: form.querySelector("#companyDepartments").value,
+    requiredSkills: form.querySelector("#companySkills").value,
     minCGPA: Number(form.querySelector("#companyCgpa").value || 0),
     minResumeScore: Number(form.querySelector("#companyResume").value || 0),
     packageLPA: Number(form.querySelector("#companyPackage").value || 0),
-    location: "",
-    openings: 0,
-  };
-
-  const existingIndex = state.companies.findIndex((company) => company.id === nextCompany.id);
-  if (existingIndex >= 0) {
-    state.companies[existingIndex] = nextCompany;
-  } else {
-    state.companies.push(nextCompany);
-  }
-  state.activity = [`Saved company ${nextCompany.name}`, ...(state.activity || [])].slice(0, 10);
-  saveData(state);
+  });
+  return company;
 }
 
-async function syncProfileFromServer() {
-  await loadRemoteProfile();
+async function processResume(file) {
+  if (!file) return;
+  if (!/\.(pdf|txt)$/i.test(file.name)) {
+    toast("Only PDF or TXT resumes are allowed.");
+    return;
+  }
+  if (file.size > 2 * 1024 * 1024) {
+    toast("Resume file must be 2 MB or smaller.");
+    return;
+  }
+  const student = state.students.find((item) => item.email === currentUser.email) || state.students[0];
+  viewState.resumeProgress = 0;
+  viewState.resumeStatus = "Reading and analyzing resume...";
   refreshLayout();
+  try {
+    const resume = await analyzeResumeDocument(file, student, state.companies, (progress) => {
+      viewState.resumeProgress = progress;
+      viewState.resumeStatus = progress < 100 ? `Analyzing resume (${progress}%)` : "Resume analysis complete.";
+      refreshLayout();
+    });
+    state.resumes[student.id] = resume;
+    appendActivity(state, `Analyzed resume for ${student.name}`);
+    saveData(state);
+    toast("Resume analyzed successfully.");
+  } catch (error) {
+    toast(error.message);
+  } finally {
+    viewState.resumeProgress = 0;
+    refreshLayout();
+  }
 }
 
 function bindRouteActions() {
-  document.querySelectorAll("[data-edit-student]").forEach((button) => {
+  document.querySelectorAll("[data-start-edit]").forEach((button) => {
     button.addEventListener("click", () => {
-      const student = state.students.find((item) => item.id === button.dataset.editStudent);
-      if (!student) return;
-      const cgpa = window.prompt(`Update CGPA for ${student.name}`, String(student.cgpa));
-      const resumeScore = window.prompt(`Update Resume Score for ${student.name}`, String(student.resumeScore));
-      const placementStatus = window.prompt(`Update Placement Status for ${student.name}`, student.placementStatus);
-      if (cgpa == null || resumeScore == null || placementStatus == null) return;
-      updateStudent(student.id, {
-        cgpa: Number(cgpa),
-        resumeScore: Number(resumeScore),
-        placementStatus: placementStatus.trim(),
+      viewState.editingStudentId = button.dataset.startEdit;
+      refreshLayout();
+    });
+  });
+
+  document.querySelectorAll("[data-cancel-edit]").forEach((button) => {
+    button.addEventListener("click", () => {
+      viewState.editingStudentId = null;
+      refreshLayout();
+    });
+  });
+
+  document.querySelectorAll("[data-save-edit]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const studentId = button.dataset.saveEdit;
+      const row = document.querySelector(`[data-edit-row="${studentId}"]`);
+      if (!row) return;
+      updateStudentRecord(state, studentId, {
+        cgpa: row.querySelector('[data-field="cgpa"]')?.value,
+        resumeScore: row.querySelector('[data-field="resumeScore"]')?.value,
+        skills: row.querySelector('[data-field="skills"]')?.value,
+        placementStatus: row.querySelector('[data-field="placementStatus"]')?.value,
       });
+      viewState.editingStudentId = null;
+      toast("Student record updated.");
       refreshLayout();
     });
   });
@@ -324,17 +344,19 @@ function bindRouteActions() {
       form.querySelector("#companyName").value = company.name;
       form.querySelector("#companyRoles").value = company.roles.join(", ");
       form.querySelector("#companyDepartments").value = company.eligibleDepartments.join(", ");
+      form.querySelector("#companySkills").value = (company.requiredSkills || []).join(", ");
       form.querySelector("#companyCgpa").value = company.minCGPA;
       form.querySelector("#companyResume").value = company.minResumeScore;
       form.querySelector("#companyPackage").value = company.packageLPA;
+      currentRoute = "profile";
+      refreshLayout();
     });
   });
 
   document.querySelectorAll("[data-delete-company]").forEach((button) => {
     button.addEventListener("click", () => {
-      state.companies = state.companies.filter((company) => company.id !== button.dataset.deleteCompany);
-      state.activity = ["Deleted company record", ...(state.activity || [])].slice(0, 10);
-      saveData(state);
+      deleteCompany(state, button.dataset.deleteCompany);
+      toast("Company removed.");
       refreshLayout();
     });
   });
@@ -342,39 +364,24 @@ function bindRouteActions() {
   const companyForm = document.getElementById("companyForm");
   companyForm?.addEventListener("submit", (event) => {
     event.preventDefault();
-    saveCompanyFromForm(companyForm);
+    const company = saveCompanyFromForm(companyForm);
     companyForm.reset();
+    toast(`Saved ${company.name}.`);
     refreshLayout();
   });
 
   const facultyForm = document.getElementById("facultyForm");
   facultyForm?.addEventListener("submit", (event) => {
     event.preventDefault();
-    const name = facultyForm.querySelector("#facultyName").value.trim();
-    const email = facultyForm.querySelector("#facultyEmail").value.trim();
-    const department = facultyForm.querySelector("#facultyDepartment").value.trim().toLowerCase();
-    state.faculty.push({
-      id: `faculty-${Date.now()}`,
-      name,
-      email,
+    addFacultyAccount(state, {
+      id: Date.now(),
+      name: facultyForm.querySelector("#facultyName").value.trim(),
+      email: facultyForm.querySelector("#facultyEmail").value.trim(),
+      department: facultyForm.querySelector("#facultyDepartment").value.trim(),
       role: ROLES.FACULTY,
-      department,
-      subjects: [],
-      experienceYears: 0,
-      rating: 0,
-      phone: "",
     });
-    state.users.push({
-      id: `faculty-user-${Date.now()}`,
-      name,
-      email,
-      role: ROLES.FACULTY,
-      department,
-      password: "demo123",
-    });
-    state.activity = [`Added faculty account for ${name}`, ...(state.activity || [])].slice(0, 10);
-    saveData(state);
     facultyForm.reset();
+    toast("Faculty account added.");
     refreshLayout();
   });
 
@@ -385,48 +392,32 @@ function bindRouteActions() {
     const datasetType = datasetImportForm.querySelector("#datasetType").value;
     const file = fileInput.files?.[0];
     if (!file) {
-      showToast("Choose a JSON file to upload.");
+      toast("Choose a JSON file to upload.");
       return;
     }
     const records = JSON.parse(await file.text());
     importDatasetIntoState(state, datasetType, records);
-    showToast(`${datasetType} dataset updated.`);
+    currentUser = syncCurrentUser(state, currentUser);
+    if (currentUser) setSession(currentUser);
+    toast(`${datasetType} dataset updated.`);
     refreshLayout();
   });
 
   document.getElementById("resetDatasetsButton")?.addEventListener("click", async () => {
     state = await resetToAssetData();
-    currentUser =
-      state.users.find((user) => user.email === currentUser.email && user.role === currentUser.role) || currentUser;
+    currentUser = syncCurrentUser(state, currentUser);
     if (currentUser) {
       setSession(currentUser);
       await loadRemoteProfile();
     }
-    showToast("Reset to asset datasets.");
+    toast("Reset to asset datasets.");
     refreshLayout();
   });
 
   const dropzone = document.getElementById("dropzone");
   const resumeInput = document.getElementById("resumeInput");
-  const handleResume = (file) => {
-    if (!file) return;
-    if (!/\.pdf$/i.test(file.name)) {
-      showToast("Only PDF resumes are allowed.");
-      return;
-    }
-    if (file.size > 2 * 1024 * 1024) {
-      showToast("Resume file must be 2 MB or smaller.");
-      return;
-    }
-    const student = state.students.find((item) => item.email === currentUser.email) || state.students[0];
-    state.resumes[student.id] = analyzeResumeFile(file, student);
-    state.activity = [`Analyzed resume for ${student.name}`, ...(state.activity || [])].slice(0, 10);
-    saveData(state);
-    refreshLayout();
-  };
-
   dropzone?.addEventListener("click", () => resumeInput.click());
-  resumeInput?.addEventListener("change", () => handleResume(resumeInput.files?.[0]));
+  resumeInput?.addEventListener("change", () => processResume(resumeInput.files?.[0]));
   ["dragenter", "dragover"].forEach((eventName) => {
     dropzone?.addEventListener(eventName, (event) => {
       event.preventDefault();
@@ -439,7 +430,7 @@ function bindRouteActions() {
       dropzone.classList.remove("dragging");
     });
   });
-  dropzone?.addEventListener("drop", (event) => handleResume(event.dataTransfer?.files?.[0]));
+  dropzone?.addEventListener("drop", (event) => processResume(event.dataTransfer?.files?.[0]));
 
   const profilePhotoForm = document.getElementById("profilePhotoForm");
   profilePhotoForm?.addEventListener("submit", async (event) => {
@@ -457,10 +448,10 @@ function bindRouteActions() {
         fileData,
       });
       currentProfile = response.profile || {};
-      showToast("Profile photo updated.");
+      toast("Profile photo updated.");
       refreshLayout();
     } catch (error) {
-      showToast(error.message);
+      toast(error.message);
     } finally {
       setLoading(uploadButton, false);
     }
@@ -470,26 +461,26 @@ function bindRouteActions() {
     try {
       await deleteProfilePhoto(currentUser.email);
       currentProfile = {};
-      showToast("Profile photo removed.");
+      toast("Profile photo removed.");
       refreshLayout();
     } catch (error) {
-      showToast(error.message);
+      toast(error.message);
     }
   });
 
   document.getElementById("refreshProfileButton")?.addEventListener("click", async () => {
-    await syncProfileFromServer();
-    showToast("Profile synced.");
+    await loadRemoteProfile();
+    toast("Profile synced.");
+    refreshLayout();
   });
 }
 
 async function initialize() {
-  applyTheme();
+  applyCurrentTheme();
   showLoginStep();
   state = await loadInitialData();
   if (currentUser) {
-    currentUser =
-      state.users.find((user) => user.email === currentUser.email && user.role === currentUser.role) || null;
+    currentUser = syncCurrentUser(state, currentUser);
     if (currentUser) {
       setSession(currentUser);
       await loadRemoteProfile();
@@ -504,9 +495,9 @@ async function initialize() {
     setLoading(button, true);
     try {
       await beginLogin(elements.loginEmail.value, elements.loginPassword.value);
-      showToast("Password accepted. Enter the in-app OTP to continue.");
+      toast("Password accepted. Enter the in-app OTP to continue.");
     } catch (error) {
-      showToast(error.message);
+      toast(error.message);
       showLoginStep();
     } finally {
       setLoading(button, false);
@@ -519,9 +510,9 @@ async function initialize() {
     setLoading(button, true);
     try {
       await completeLogin(elements.otpCode.value.trim());
-      showToast("Login verified.");
+      toast("Login verified.");
     } catch (error) {
-      showToast(error.message);
+      toast(error.message);
     } finally {
       setLoading(button, false);
     }
@@ -532,15 +523,13 @@ async function initialize() {
     try {
       const response = await requestOtp(pendingUser.email);
       showOtpStep(createOtpNotice(response), response.expiresAt);
-      showToast("A new OTP has been generated.");
+      toast("A new OTP has been generated.");
     } catch (error) {
-      showToast(error.message);
+      toast(error.message);
     }
   });
 
-  elements.otpBackButton.addEventListener("click", () => {
-    showLoginStep();
-  });
+  elements.otpBackButton.addEventListener("click", showLoginStep);
 
   elements.logoutButton.addEventListener("click", () => {
     currentUser = null;
@@ -552,15 +541,21 @@ async function initialize() {
 
   elements.themeToggle.addEventListener("click", () => {
     setTheme(getTheme() === "dark" ? "light" : "dark");
-    applyTheme();
-    showToast(`Switched to ${getTheme()} mode.`);
+    applyCurrentTheme();
+    toast(`Switched to ${getTheme()} mode.`);
   });
 
   elements.navList.addEventListener("click", (event) => {
     const button = event.target.closest("[data-route]");
     if (!button) return;
+    updateDrawer(false);
     setRoute(button.dataset.route);
   });
+
+  elements.menuToggle?.addEventListener("click", () => {
+    updateDrawer(!viewState.drawerOpen);
+  });
+  elements.navOverlay?.addEventListener("click", () => updateDrawer(false));
 
   ["change", "input"].forEach((eventName) => {
     elements.departmentFilter.addEventListener(eventName, refreshLayout);
@@ -572,4 +567,4 @@ async function initialize() {
   refreshLayout();
 }
 
-initialize().catch((error) => showToast(error.message));
+initialize().catch((error) => toast(error.message));

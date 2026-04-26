@@ -25,6 +25,7 @@ if (fs.existsSync(datasetSourceDir)) {
     "terna_students_dataset.json",
     "terna_teachers_dataset.json",
     "terna_companies_dataset.json",
+    "terna_tnp_officers_dataset.json",
   ];
   for (const datasetFile of datasetFiles) {
     const source = path.join(datasetSourceDir, datasetFile);

@@ -1,7 +1,7 @@
 export const ROLES = {
   STUDENT: "student",
   FACULTY: "faculty",
-  TNP: "tnp",
+  TNP: "tnp_officer",
 };
 
 export const ROUTES_BY_ROLE = {
@@ -12,8 +12,12 @@ export const ROUTES_BY_ROLE = {
 
 export function normalizeRole(role) {
   const value = String(role || "").trim().toLowerCase();
-  if (["tnp", "admin", "tnp officer"].includes(value)) return ROLES.TNP;
-  if (["teacher", "faculty", "hod"].includes(value)) return ROLES.FACULTY;
+  if (["tnp", "admin", "tnp officer", "tnp_officer", "placement head"].includes(value)) {
+    return ROLES.TNP;
+  }
+  if (["teacher", "faculty", "hod"].includes(value)) {
+    return ROLES.FACULTY;
+  }
   return ROLES.STUDENT;
 }
 
@@ -31,7 +35,15 @@ export function canManageCompanies(role) {
   return role === ROLES.TNP;
 }
 
+export function canManageFaculty(role) {
+  return role === ROLES.TNP;
+}
+
 export function canEditStudents(role) {
+  return role === ROLES.TNP || role === ROLES.FACULTY;
+}
+
+export function canEditPlacementStatus(role) {
   return role === ROLES.TNP;
 }
 

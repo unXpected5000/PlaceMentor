@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="./css/icons.css" />
   </head>
   <body>
+    <div id="navOverlay" class="nav-overlay hidden"></div>
     <div class="app-shell">
       <aside class="sidebar" aria-label="Main navigation">
         <div class="brand-card">
@@ -35,9 +36,12 @@
 
       <main class="main-panel">
         <header class="topbar">
-          <div>
+          <div class="topbar-left">
+            <button id="menuToggle" class="button icon-button mobile-only" type="button" aria-label="Toggle navigation">Menu</button>
+            <div>
             <p class="breadcrumb">Placementor / <span id="breadcrumbPage">Dashboard</span></p>
             <h2 id="pageTitle">Dashboard</h2>
+            </div>
           </div>
           <div class="topbar-actions">
             <button id="themeToggle" class="button secondary" type="button">Theme</button>
